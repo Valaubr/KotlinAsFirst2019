@@ -73,7 +73,7 @@ fun ageDescription(age: Int): String {
         age.toString() + " год"
     } else if (age % 10 in 5..9) {
         age.toString() + " лет"
-    } else if(age % 10 in 2..4) {
+    } else if (age % 10 in 2..4) {
         age.toString() + " года"
     } else {
         age.toString() + " лет"
@@ -126,11 +126,8 @@ fun whichRookThreatens(
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
 ): Int {
-    if (kingX == rookX1 && kingX == rookX2 || kingX == rookY1 && kingX == rookY2 ||
-        kingX == rookY1 && kingX == rookX2 || kingX == rookX1 && kingX == rookY2 ||
-        kingY == rookX1 && kingY == rookX2 || kingY == rookY1 && kingY == rookY2 ||
-        kingY == rookY1 && kingY == rookX2 || kingY == rookX1 && kingY == rookY2
-    ) {
+    if (kingX == rookX1 && kingX == rookX2 || kingY == rookY1 && kingY == rookY2 ||
+        kingX == rookX1 && kingY == rookY2 || kingX == rookX2 && kingY == rookY1) {
         return 3;
     } else if (kingX == rookX1 || kingY == rookY1) {
         return 1;
@@ -221,14 +218,14 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
     if (b < c || d < a) {
         return -1;
-    } else if (a <= c && b >= c && b <= d) {
-        return abs(abs(b) - abs(c));
+    } else if (c in a..b && b <= d) {
+        return abs(b - c);
     } else if (a <= c && b >= d) {
-        return abs(abs(d) - abs(c));
+        return abs(d - c);
     } else if (c <= a && b >= d) {
-        return abs(abs(d) - abs(a));
+        return abs(d - a);
     } else if (c <= a && b <= d) {
-        return abs(abs(b) - abs(a));
+        return abs(b - a);
     }
     return 0;
 }
