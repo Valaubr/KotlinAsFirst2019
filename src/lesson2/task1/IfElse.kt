@@ -3,7 +3,10 @@
 package lesson2.task1
 
 import lesson1.task1.discriminant
+import lesson1.task1.sqr
+import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.sin
 import kotlin.math.sqrt
 
 /**
@@ -63,7 +66,20 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String = TODO()
+fun ageDescription(age: Int): String {
+    return if (age % 100 in 11..14) {
+        age.toString() + " лет"
+    } else if (age % 10 == 1) {
+        age.toString() + " год"
+    } else if (age % 10 in 5..9) {
+        age.toString() + " лет"
+    } else if(age % 10 in 2..4) {
+        age.toString() + " года"
+    } else {
+        age.toString() + " лет"
+    }
+}
+
 
 /**
  * Простая
@@ -76,7 +92,25 @@ fun timeForHalfWay(
     t1: Double, v1: Double,
     t2: Double, v2: Double,
     t3: Double, v3: Double
-): Double = TODO()
+): Double {
+    var s1 = t1 * v1;
+    var s2 = t2 * v2;
+    var s3 = t3 * v3;
+    var t: Double;
+    var s: Double;
+
+    s = (s1 + s2 + s3) / 2;
+    return if (s <= s1) {
+        t = s / v1
+        t;
+    } else if (s > s1 && s <= s1 + s2) {
+        t = t1 + (s - s1) / v2
+        t;
+    } else {
+        t = t1 + t2 + (s - s1 - s2) / v3;
+        t;
+    }
+}
 
 /**
  * Простая
@@ -91,7 +125,20 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int = TODO()
+): Int {
+    if (kingX == rookX1 && kingX == rookX2 || kingX == rookY1 && kingX == rookY2 ||
+        kingX == rookY1 && kingX == rookX2 || kingX == rookX1 && kingX == rookY2 ||
+        kingY == rookX1 && kingY == rookX2 || kingY == rookY1 && kingY == rookY2 ||
+        kingY == rookY1 && kingY == rookX2 || kingY == rookX1 && kingY == rookY2
+    ) {
+        return 3;
+    } else if (kingX == rookX1 || kingY == rookY1) {
+        return 1;
+    } else if (kingX == rookX2 || kingY == rookY2) {
+        return 2;
+    }
+    return 0;
+}
 
 /**
  * Простая
@@ -107,7 +154,19 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int = TODO()
+): Int {
+    //Ну раз уж вычитаем, будем отрицательные в положительные переводить :D
+    if (abs(kingX - bishopX) == abs(kingY - bishopY) && kingX == rookX ||
+        abs(kingX - bishopX) == abs(kingY - bishopY) && kingY == rookY
+    ) {
+        return 3;
+    } else if (kingX == rookX || kingY == rookY) {
+        return 1;
+    } else if (abs(kingX - bishopX) == abs(kingY - bishopY)) {
+        return 2;
+    }
+    return 0;
+}
 
 /**
  * Простая
@@ -117,7 +176,39 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+    if (a + b < c || a + c < b || b + c < a) {
+        return -1;
+    }
+
+    var max: Double;
+    var line1: Double;
+    var line2: Double;
+
+    if (a > b && a > c) {
+        max = a;
+        line1 = b;
+        line2 = c;
+    } else if (b > a && b > c) {
+        max = b;
+        line1 = a;
+        line2 = c;
+    } else {
+        max = c
+        line1 = a;
+        line2 = b;
+    }
+
+
+
+    if (sqr(max) == sqr(line1) + sqr(line2)) {
+        return 1;
+    } else if (sqr(max) < sqr(line1) + sqr(line2)) {
+        return 0;
+    } else {
+        return 2;
+    }
+}
 
 /**
  * Средняя
@@ -127,4 +218,17 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
+    if (b < c || d < a) {
+        return -1;
+    } else if (a <= c && b >= c && b <= d) {
+        return abs(abs(b) - abs(c));
+    } else if (a <= c && b >= d) {
+        return abs(abs(d) - abs(c));
+    } else if (c <= a && b >= d) {
+        return abs(abs(d) - abs(a));
+    } else if (c <= a && b <= d) {
+        return abs(abs(b) - abs(a));
+    }
+    return 0;
+}
