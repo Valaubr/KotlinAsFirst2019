@@ -22,10 +22,10 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
  * Определить, счастливое ли заданное число, вернуть true, если это так.
  */
 fun isNumberHappy(number: Int): Boolean {
-    var one = number % 10;
-    var two = ((number % 100) - one) / 10
-    var three = ((number % 1000) - (one + two)) / 100
-    var four = (number - (one + two + three)) / 1000
+    val one = number % 10;
+    val two = ((number % 100) - one) / 10
+    val three = ((number % 1000) - (one + two)) / 100
+    val four = (number - (one + two + three)) / 1000
 
     return one + two == three + four
 }
@@ -47,15 +47,11 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean = x1 == x2 || y1
  * Вернуть число дней в этом месяце этого года по григорианскому календарю.
  */
 fun daysInMonth(month: Int, year: Int): Int {
-    return if (month == 1 || month == 3 || month == 5 || month == 7 ||
-        month == 8 || month == 10 || month == 12
-    ) {
-        31;
-    } else if (month == 4 || month == 6 || month == 9 || month == 11) {
-        30;
-    } else {
-        if (year % 100 == 0 && year % 400 == 0 || year % 100 != 0 && year % 4 == 0) {
-            29;
+    return when (month) {
+        1, 3, 5, 7, 8, 10, 12 -> 31
+        4, 6, 9, 11 -> 30
+        else -> if (year % 100 == 0 && year % 400 == 0 || year % 100 != 0 && year % 4 == 0) {
+            29
         } else {
             28
         }
