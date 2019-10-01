@@ -4,10 +4,7 @@ package lesson2.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.sin
-import kotlin.math.sqrt
+import kotlin.math.*
 
 /**
  * Пример
@@ -213,16 +210,8 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    if (b < c || d < a) {
-        return -1
-    } else if (c in a..b && b <= d) {
-        return abs(b - c)
-    } else if (a <= c && b >= d) {
-        return abs(d - c)
-    } else if (c <= a && b >= d) {
-        return abs(d - a)
-    } else if (c <= a && b <= d) {
-        return abs(b - a)
+    return when {
+        b < c || d < a -> -1
+        else -> min(b, d) - max(a, c)
     }
-    return 0
 }
