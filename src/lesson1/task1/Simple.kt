@@ -59,7 +59,7 @@ fun main() {
  * Пользователь задает время в часах, минутах и секундах, например, 8:20:35.
  * Рассчитать время в секундах, прошедшее с начала суток (30035 в данном случае).
  */
-fun seconds(hours: Int, minutes: Int, seconds: Int): Int = ((60 * 60) * hours) + (60 * minutes) + seconds;
+fun seconds(hours: Int, minutes: Int, seconds: Int): Int = ((60 * 60) * hours) + (60 * minutes) + seconds
 
 /**
  * Тривиальная
@@ -69,7 +69,7 @@ fun seconds(hours: Int, minutes: Int, seconds: Int): Int = ((60 * 60) * hours) +
  * 1 сажень = 3 аршина = 48 вершков, 1 вершок = 4.445 см.
  */
 fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double =
-    ((4.445 * vershoks) + arshins * (16 * 4.445) + sagenes * (48 * 4.445)) / 100;
+    ((4.445 * vershoks) + arshins * (16 * 4.445) + sagenes * (48 * 4.445)) / 100
 
 /**
  * Тривиальная
@@ -78,7 +78,7 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double =
  * Вывести значение того же угла в радианах (например, 0.63256).
  */
 fun angleInRadian(deg: Int, min: Int, sec: Int): Double =
-    deg * (PI / 180) + min * ((PI / 180) / 60) + sec * ((PI / 180) / 3600);
+    deg * (PI / 180) + min * ((PI / 180) / 60) + sec * ((PI / 180) / 3600)
 //1° = (Pi/180) радиан
 //минуты и секунды => 1 минута =1/60 градуса, 1 секунда 1/3600 градуса
 //Не ввожу новые переменные потому что предпологаю что не стоит забивать код ими пока :D
@@ -98,7 +98,7 @@ fun trackLength(x1: Double, y1: Double, x2: Double, y2: Double): Double =
  * Пользователь задает целое число, большее 100 (например, 3801).
  * Определить третью цифру справа в этом числе (в данном случае 8).
  */
-fun thirdDigit(number: Int): Int = (number % 1000) / 100;
+fun thirdDigit(number: Int): Int = (number % 1000) / 100
 
 /**
  * Простая
@@ -110,7 +110,7 @@ fun thirdDigit(number: Int): Int = (number % 1000) / 100;
 fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int =
     //раз мы не считаем что поезд может приехать после полуночи то решим так:
 
-    ((hoursArrive - hoursDepart) * 60) + minutesArrive - minutesDepart;
+    ((hoursArrive - hoursDepart) * 60) + minutesArrive - minutesDepart
 
 //Вроде элементарная, нет подводных камней?
 /**
@@ -120,18 +120,7 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
  * Сколько денег будет на счету через 3 года (с учётом сложных процентов)?
  * Например, 100 рублей под 10% годовых превратятся в 133.1 рубля
  */
-fun accountInThreeYears(initial: Int, percent: Int): Double {
-    //извините, без цикла и доп. переменной выходил большой и не читабельный бред...
-    //а возможно я чего то не додумал :)
-    var x = 0
-    var z = initial.toDouble();
-    while (x < 3) {
-        z += (z * percent) / 100;
-        x++
-    }
-
-    return z
-}
+fun accountInThreeYears(initial: Int, percent: Int): Double = initial * (percent / 100.0 + 1).pow(3)
 
 
 /**
@@ -140,4 +129,4 @@ fun accountInThreeYears(initial: Int, percent: Int): Double {
  * Пользователь задает целое трехзначное число (например, 478).
  * Необходимо вывести число, полученное из заданного перестановкой цифр в обратном порядке (например, 874).
  */
-fun numberRevert(number: Int): Int = (number / 100) + (number % 10) * 100 + ((number % 100) - (number % 10));
+fun numberRevert(number: Int): Int = (number / 100) + (number % 10) * 100 + ((number % 100) - (number % 10))

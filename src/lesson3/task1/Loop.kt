@@ -81,7 +81,7 @@ fun digitNumber(n: Int): Int {
     // Не понимаю почему нельзя работать с переменной n
     // Да, переписал решение, через логарифм работает, но возникают прблемы округления
     // Решение которых сложновато для этой задачки :D пойду простым путем.
-    var x = n;
+    var x = n
     while (true) {
         if (abs(x) / 10 > 0) {
             counter++
@@ -246,11 +246,7 @@ fun collatzSteps(x: Int): Int {
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
 fun sin(x: Double, eps: Double): Double {
-    // Если я проавильно понял, задачка на ряд Тейлора...
-    // от оптимизацию я не проведу, честно, не проходили мы ещё ряды (в колледже было но это было давненько :(
 
-    // Ну не, это жесть, вычислять исключительно двойной точностью числа с плавающей точностью
-    // это уж как то трудновато для "Задачи средней сложности"
     val z = x - 2 * PI * truncate(x / (2 * PI))
     var p = z
     var s = z
@@ -338,13 +334,13 @@ fun hasDifferentDigits(n: Int): Boolean {
     var stepParam = n
     var count = 0
     var beNum = 0
-    val b = stepParam % 10;
+    val b = stepParam % 10
 
     for (i in 0..n) {
         return if (stepParam < 10 && stepParam > -1) {
             false
         } else {
-            stepParam /= 10;
+            stepParam /= 10
             if (b != stepParam % 10) {
                 true
             } else {
@@ -376,7 +372,7 @@ fun squareSequenceDigit(n: Int): Int {
 
     while (count < n) {
         x += sqr(i)
-        counter = x;
+        counter = x
         while (x != 0) {
             count++
             x /= 10
@@ -418,7 +414,7 @@ fun fibSequenceDigit(n: Int): Int {
 
         x = n0 + n1
 
-        counter = x;
+        counter = x
         while (x != 0) {
             count++
             x /= 10

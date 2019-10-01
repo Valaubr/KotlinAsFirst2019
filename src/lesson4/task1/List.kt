@@ -121,14 +121,14 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * Модуль пустого вектора считать равным 0.0.
  */
 fun abs(v: List<Double>): Double {
-    var x = 0.0;
+    var x = 0.0
     return if (v.isEmpty()) {
-        0.0;
+        0.0
     } else {
         for (element in v) {
-            x += sqr(element);
+            x += sqr(element)
         }
-        sqrt(x);
+        sqrt(x)
     }
 }
 
@@ -140,12 +140,12 @@ fun abs(v: List<Double>): Double {
 fun mean(list: List<Double>): Double {
     var x = 0.0
     if (list.isEmpty()) {
-        return 0.0;
+        return 0.0
     }
     for (element in list) {
         x += element
     }
-    return x / list.size;
+    return x / list.size
 }
 
 /**
@@ -157,16 +157,16 @@ fun mean(list: List<Double>): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    var i = 0;
+    var i = 0
     var mean = mean(list)
     if (list.isEmpty()) {
-        return list;
+        return list
     } else {
         while (i < list.size) {
             list[i] -= mean
-            i++;
+            i++
         }
-        return list;
+        return list
     }
 }
 
@@ -178,14 +178,14 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
 fun times(a: List<Int>, b: List<Int>): Int {
-    var i = 0;
-    var c = 0;
+    var i = 0
+    var c = 0
     return if (a.isEmpty() || b.isEmpty()) {
-        c;
+        c
     } else {
         while (i < a.size) {
-            c += a[i] * b[i];
-            i++;
+            c += a[i] * b[i]
+            i++
         }
         c
     }
@@ -200,18 +200,18 @@ fun times(a: List<Int>, b: List<Int>): Int {
  * Значение пустого многочлена равно 0 при любом x.
  */
 fun polynom(p: List<Int>, x: Int): Int {
-    var i = 0;
-    var z = 0.0;
+    var i = 0
+    var z = 0.0
     return if (p.isEmpty()) {
-        0;
+        0
     } else {
         while (i < p.size) {
             if (i == 0) {
-                z += p[i];
-                i++;
+                z += p[i]
+                i++
             } else {
-                z += p[i] * pow(x.toDouble(), i.toDouble());
-                i++;
+                z += p[i] * pow(x.toDouble(), i.toDouble())
+                i++
             }
         }
         z.toInt()
@@ -231,17 +231,18 @@ fun polynom(p: List<Int>, x: Int): Int {
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
     // да ну в кои то веки понял как forEach работает, странно правда что я не могу указать it += before,
     // но раз можно сделать функцией, буду делать функцией...
-    var before = 0;
-    var i = 0;
-    if (list.isEmpty()) {
-        return list;
-    } else {
-        while (i < list.size) {
-            list[i] += before;
-            before = list[i];
-            i++;
+    var before = 0
+    var i = 0
+    return when {
+        list.isEmpty() -> list
+        else -> {
+            while (i < list.size) {
+                list[i] += before
+                before = list[i]
+                i++
+            }
+            list
         }
-        return list;
     }
 }
 
@@ -253,24 +254,24 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
  * Множители в списке должны располагаться по возрастанию.
  */
 fun factorize(n: Int): List<Int> {
-    var a = n;
+    var a = n
     var list = arrayListOf1<Int>()
-    var x = 2;
+    var x = 2
     while (a > 1) {
         while (a % x == 0) {
             if (a != 2) {
                 a /= x
-                list.add(x);
+                list.add(x)
             } else {
-                list.add(x);
+                list.add(x)
                 a /= x
                 break
             }
         }
-        if (x == 2) x++;
-        else x += 2;
+        if (x == 2) x++
+        else x += 2
     }
-    return list.toList();
+    return list.toList()
 }
 
 /**
@@ -281,14 +282,14 @@ fun factorize(n: Int): List<Int> {
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
 fun factorizeToString(n: Int): String {
-    var x = factorize(n);
-    var i = 0;
-    var returnedStr = "";
+    var x = factorize(n)
+    var i = 0
+    var returnedStr = ""
     while (i < x.size) {
         returnedStr += x[i].toString() + "*"
-        i++;
+        i++
     }
-    return trim(returnedStr);
+    return trim(returnedStr)
 }
 
 /**
@@ -299,10 +300,10 @@ fun factorizeToString(n: Int): String {
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
 fun convert(n: Int, base: Int): List<Int> {
-    var list = arrayListOf1<Int>();
-    var number = n;
-    var c = 0;
-    var d = 0;
+    var list = arrayListOf1<Int>()
+    var number = n
+    var c = 0
+    var d = 0
     if (number > 9) {
         while (true) {
             d = number % base
@@ -326,7 +327,7 @@ fun convert(n: Int, base: Int): List<Int> {
             }
         }
     }
-    return list.reversed().toList();
+    return list.reversed().toList()
 }
 
 /**
@@ -342,19 +343,19 @@ fun convert(n: Int, base: Int): List<Int> {
  */
 fun convertToString(n: Int, base: Int): String {
     // я чет подумал, зачем 2 раза писать одно и то же если можно воспользоваться написанной самим собой реализацией
-    var x = convert(n, base);
-    var notStandartNum = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
-    var i = 0;
-    var finalString = "";
+    var x = convert(n, base)
+    var notStandartNum = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()
+    var i = 0
+    var finalString = ""
     while (i < x.size) {
-        finalString += notStandartNum[x[i]].toString();
+        finalString += notStandartNum[x[i]].toString()
 
         if (i == 0 && finalString == "0") {
-            finalString = "";
+            finalString = ""
         }
-        i++;
+        i++
     }
-    return finalString.toLowerCase();
+    return finalString.toLowerCase()
 }
 
 /**
@@ -365,12 +366,12 @@ fun convertToString(n: Int, base: Int): String {
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
 fun decimal(digits: List<Int>, base: Int): Int {
-    var i = 0;
-    var finalNum = 0.0;
-    var digitsRevers = digits.reversed();
+    var i = 0
+    var finalNum = 0.0
+    var digitsRevers = digits.reversed()
     while (i < digits.size) {
         finalNum += digitsRevers[i] * pow(base.toDouble(), i.toDouble())
-        i++;
+        i++
     }
     return finalNum.toInt()
 }
@@ -388,54 +389,54 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int {
-    var x = "";
+    var x = ""
     var num = arrayListOf1<Int>()
-    var i = 0;
+    var i = 0
 
     while (i < str.length) {
         num.add(
             when (str[i].toString()) {
-                "1" -> 1;
-                "2" -> 2;
-                "3" -> 3;
-                "4" -> 4;
-                "5" -> 5;
-                "6" -> 6;
-                "7" -> 7;
-                "8" -> 8;
-                "9" -> 9;
-                "a" -> 10;
-                "b" -> 11;
-                "c" -> 12;
-                "d" -> 13;
-                "e" -> 14;
-                "f" -> 15;
-                "g" -> 16;
-                "h" -> 17;
-                "i" -> 18;
-                "j" -> 19;
-                "k" -> 20;
-                "l" -> 21;
-                "m" -> 22;
-                "n" -> 23;
-                "o" -> 24;
-                "p" -> 25;
-                "q" -> 26;
-                "r" -> 27;
-                "s" -> 28;
-                "t" -> 29;
-                "u" -> 30;
-                "v" -> 31;
-                "w" -> 32;
-                "x" -> 33;
-                "y" -> 34;
-                "z" -> 35;
-                else -> 0;
+                "1" -> 1
+                "2" -> 2
+                "3" -> 3
+                "4" -> 4
+                "5" -> 5
+                "6" -> 6
+                "7" -> 7
+                "8" -> 8
+                "9" -> 9
+                "a" -> 10
+                "b" -> 11
+                "c" -> 12
+                "d" -> 13
+                "e" -> 14
+                "f" -> 15
+                "g" -> 16
+                "h" -> 17
+                "i" -> 18
+                "j" -> 19
+                "k" -> 20
+                "l" -> 21
+                "m" -> 22
+                "n" -> 23
+                "o" -> 24
+                "p" -> 25
+                "q" -> 26
+                "r" -> 27
+                "s" -> 28
+                "t" -> 29
+                "u" -> 30
+                "v" -> 31
+                "w" -> 32
+                "x" -> 33
+                "y" -> 34
+                "z" -> 35
+                else -> 0
             }
         )
-        i++;
+        i++
     }
-    return decimal(num, base);
+    return decimal(num, base)
 }
 
 /**
@@ -461,7 +462,7 @@ fun roman(n: Int): String {
         .replace("CCCCC", "D")
         .replace("CCCC", "CD")
         .replace("DD", "M")
-        .replace("DCD", "CM");
+        .replace("DCD", "CM")
 }
 
 /**
@@ -502,7 +503,7 @@ fun russian(n: Int): String {
         6 to "шесть ", 7 to "семь ", 8 to "восемь ", 9 to "девять ", 0 to ""
     )
 
-    var x = n.toString();
+    var x = n.toString()
 
     if (n.toString().length > 5) {
         if (x[1].toString().toInt() == 1 && x[4].toString().toInt() == 1) {
