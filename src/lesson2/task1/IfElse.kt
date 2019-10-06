@@ -61,14 +61,12 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String {
-    return when {
-        age % 100 in 11..14 -> "$age лет"
-        age % 10 == 1 -> "$age год"
-        age % 10 in 5..9 -> "$age лет"
-        age % 10 in 2..4 -> "$age года"
-        else -> "$age лет"
-    }
+fun ageDescription(age: Int): String = when {
+    age % 100 in 11..14 -> "$age лет"
+    age % 10 == 1 -> "$age год"
+    age % 10 in 5..9 -> "$age лет"
+    age % 10 in 2..4 -> "$age года"
+    else -> "$age лет"
 }
 
 
@@ -87,23 +85,13 @@ fun timeForHalfWay(
     val s1 = t1 * v1
     val s2 = t2 * v2
     val s3 = t3 * v3
-    val t: Double
     val s: Double
 
     s = (s1 + s2 + s3) / 2
     return when {
-        s <= s1 -> {
-            t = s / v1
-            t
-        }
-        s > s1 && s <= s1 + s2 -> {
-            t = t1 + (s - s1) / v2
-            t
-        }
-        else -> {
-            t = t1 + t2 + (s - s1 - s2) / v3
-            t
-        }
+        s <= s1 -> s / v1
+        s > s1 && s <= s1 + s2 -> t1 + (s - s1) / v2
+        else -> t1 + t2 + (s - s1 - s2) / v3
     }
 }
 
@@ -121,12 +109,12 @@ fun whichRookThreatens(
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
 ): Int {
+    val firstRook = (rookX1 == kingX || rookY1 == kingY)
+    val twelfRook = (kingX == rookX2 || kingY == rookY2)
     return when {
-        kingX == rookX1 && kingX == rookX2 || kingY == rookY1 && kingY == rookY2 ||
-                kingX == rookX1 && kingY == rookY2 || kingX == rookX2 && kingY == rookY1
-        -> 3
-        kingX == rookX1 || kingY == rookY1 -> 1
-        kingX == rookX2 || kingY == rookY2 -> 2
+        firstRook && twelfRook -> 3
+        firstRook -> 1
+        twelfRook -> 2
         else -> 0
     }
 }
@@ -145,16 +133,14 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int {
-    //Ну раз уж вычитаем, будем отрицательные в положительные переводить :D
-    return when {
-        abs(kingX - bishopX) == abs(kingY - bishopY) && kingX == rookX ||
-                abs(kingX - bishopX) == abs(kingY - bishopY) && kingY == rookY
-        -> 3
-        kingX == rookX || kingY == rookY -> 1
-        abs(kingX - bishopX) == abs(kingY - bishopY) -> 2
-        else -> 0
-    }
+): Int = when {
+    abs(kingX - bishopX) == abs(kingY - bishopY) && kingX == rookX ||
+            abs(kingX - bishopX) == abs(kingY - bishopY) && kingY == rookY
+    -> 3
+    kingX == rookX || kingY == rookY -> 1
+    abs(kingX - bishopX) == abs(kingY - bishopY) -> 2
+    else -> 0
+
 }
 
 /**
@@ -166,37 +152,14 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    if (a + b < c || a + c < b || b + c < a) {
-        return -1
-    }
-
-    val max: Double
-    val line1: Double
-    val line2: Double
-
-    when {
-        a == maxOf(a, b, c) -> {
-            max = a
-            line1 = b
-            line2 = c
-        }
-        b == maxOf(a, b, c) -> {
-            max = b
-            line1 = a
-            line2 = c
-        }
-        else -> {
-            max = c
-            line1 = a
-            line2 = b
-        }
-    }
-
-    // так написано для лучшей читаемости и уникальности кода (Да всем ы знаем что он тут у всех похож)
+    val max: Double = maxOf(a, b, c)
+    val min: Double = minOf(a, b, c)
+    val mid = a + b + c - max - min
 
     return when {
-        sqr(max) == sqr(line1) + sqr(line2) -> 1
-        sqr(max) < sqr(line1) + sqr(line2) -> 0
+        min + mid < max -> -1
+        sqr(max) < sqr(min) + sqr(mid) -> 0
+        sqr(max) == sqr(min) + sqr(mid) -> 1
         else -> 2
     }
 }
@@ -209,9 +172,7 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    return when {
-        b < c || d < a -> -1
-        else -> min(b, d) - max(a, c)
-    }
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = when {
+    b < c || d < a -> -1
+    else -> min(b, d) - max(a, c)
 }

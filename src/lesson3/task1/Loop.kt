@@ -89,7 +89,6 @@ fun digitNumber(n: Int): Int {
         } else {
             return counter
         }
-
     }
 }
 
@@ -103,12 +102,10 @@ fun fib(n: Int): Int {
     var lastNum = 1
     var preLastNum = 1
     var helper = 1
-    for (i in 1..n) {
-        if (i >= 3) {
-            helper = lastNum
-            lastNum += preLastNum
-            preLastNum = helper
-        }
+    for (i in 3..n) {
+        helper = lastNum
+        lastNum += preLastNum
+        preLastNum = helper
     }
     return lastNum
 }
@@ -292,7 +289,7 @@ fun cos(x: Double, eps: Double): Double {
 fun revert(n: Int): Int {
     var stepParam = n
     var b = 0
-    while (true) {
+    while (stepParam != 0) {
         if (stepParam / 10 > 0) {
             b += stepParam % 10
             stepParam /= 10
@@ -316,11 +313,7 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean {
-    var stepParam = n
-    val b = revert(n)
-    return b == n
-}
+fun isPalindrome(n: Int): Boolean = revert(n) == n
 
 /**
  * Средняя
@@ -331,22 +324,12 @@ fun isPalindrome(n: Int): Boolean {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun hasDifferentDigits(n: Int): Boolean {
-    var stepParam = n
-    var count = 0
-    var beNum = 0
-    val b = stepParam % 10
+    var stepParam = n / 10
+    val b = n % 10
 
-    for (i in 0..n) {
-        return if (stepParam < 10 && stepParam > -1) {
-            false
-        } else {
-            stepParam /= 10
-            if (b != stepParam % 10) {
-                true
-            } else {
-                continue
-            }
-        }
+    while (stepParam != 0) {
+        if (b != stepParam % 10) return true
+        stepParam /= 10
     }
     return false
 }
@@ -361,7 +344,7 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun squareSequenceDigit(n: Int): Int {
-    var x: Int = 0
+    var x = 0
     var counter = 0
     var count = 0
     var i = 1
@@ -396,7 +379,7 @@ fun squareSequenceDigit(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var x: Int = 0
+    var x = 0
     var counter = 0
     var count = 2
     var i = 1
@@ -411,9 +394,7 @@ fun fibSequenceDigit(n: Int): Int {
     }
 
     while (count < n) {
-
         x = n0 + n1
-
         counter = x
         while (x != 0) {
             count++
