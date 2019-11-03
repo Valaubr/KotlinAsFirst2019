@@ -363,10 +363,10 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     //в основе bubleSort O(n^2)
-    for (i in list) {
-        for (j in list) {
-            if (i + j == number && j != i) {
-                return Pair(list.indexOf(i), list.indexOf(j))
+    for ((z, i) in list.withIndex()) {
+        for ((l, j) in list.withIndex()) {
+            if (i + j == number && z != l) {
+                return Pair(z, l)
             }
         }
     }
@@ -416,7 +416,9 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         for (w in 1..capacity) {
             if (weights[j - 1] <= w) {
                 dp[w][j] = max(dp[w][j - 1], dp[w - weights[j - 1]][j - 1] + costs[j - 1])
-                out.add(names[j - 1])
+                if (dp[w][j] != dp[w][j - 1] && dp[w][j - 1] - w != 0) {
+                    out.add(names[j - 1])
+                }
             } else {
                 dp[w][j] = dp[w][j - 1]
             }
