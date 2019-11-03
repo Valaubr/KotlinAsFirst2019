@@ -1,441 +1,538 @@
 @file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence")
 
-package lesson5.task1
+package lesson4.task1
 
-import java.util.ArrayList
-import kotlin.math.max
+import lesson1.task1.discriminant
+import lesson1.task1.sqr
+import org.junit.experimental.theories.internal.ParameterizedAssertionError.join
+import java.lang.Math.*
+import java.util.Collections.nCopies
+import kotlin.math.sqrt
+import kotlin.collections.arrayListOf as arrayListOf1
+import java.util.Locale
+import kotlin.math.pow
 
 
 /**
  * Пример
  *
- * Для заданного списка покупок `shoppingList` посчитать его общую стоимость
- * на основе цен из `costs`. В случае неизвестной цены считать, что товар
- * игнорируется.
+ * Найти все корни уравнения x^2 = y
  */
-fun shoppingListCost(shoppingList: List<String>, costs: Map<String, Double>): Double {
-    var totalCost = 0.0
-
-    for (item in shoppingList) {
-        val itemCost = costs[item]
-        if (itemCost != null) {
-            totalCost += itemCost
+fun sqRoots(y: Double) =
+    when {
+        y < 0 -> listOf()
+        y == 0.0 -> listOf(0.0)
+        else -> {
+            val root = sqrt(y)
+            // Результат!
+            listOf(-root, root)
         }
     }
 
-    return totalCost
+/**
+ * Пример
+ *
+ * Найти все корни биквадратного уравнения ax^4 + bx^2 + c = 0.
+ * Вернуть список корней (пустой, если корней нет)
+ */
+fun biRoots(a: Double, b: Double, c: Double): List<Double> {
+    if (a == 0.0) {
+        return if (b == 0.0) listOf()
+        else sqRoots(-c / b)
+    }
+    val d = discriminant(a, b, c)
+    if (d < 0.0) return listOf()
+    if (d == 0.0) return sqRoots(-b / (2 * a))
+    val y1 = (-b + sqrt(d)) / (2 * a)
+    val y2 = (-b - sqrt(d)) / (2 * a)
+    return sqRoots(y1) + sqRoots(y2)
 }
 
 /**
  * Пример
  *
- * Для набора "имя"-"номер телефона" `phoneBook` оставить только такие пары,
- * для которых телефон начинается с заданного кода страны `countryCode`
+ * Выделить в список отрицательные элементы из заданного списка
  */
-fun filterByCountryCode(phoneBook: MutableMap<String, String>, countryCode: String) {
-    val namesToRemove = mutableListOf<String>()
-
-    for ((name, phone) in phoneBook) {
-        if (!phone.startsWith(countryCode)) {
-            namesToRemove.add(name)
+fun negativeList(list: List<Int>): List<Int> {
+    val result = mutableListOf<Int>()
+    for (element in list) {
+        if (element < 0) {
+            result.add(element)
         }
     }
+    return result
+}
 
-    for (name in namesToRemove) {
-        phoneBook.remove(name)
+/**
+ * Пример
+ *
+ * Изменить знак для всех положительных элементов списка
+ */
+fun invertPositives(list: MutableList<Int>) {
+    for (i in 0 until list.size) {
+        val element = list[i]
+        if (element > 0) {
+            list[i] = -element
+        }
     }
 }
 
 /**
  * Пример
  *
- * Для заданного текста `text` убрать заданные слова-паразиты `fillerWords`
- * и вернуть отфильтрованный текст
+ * Из имеющегося списка целых чисел, сформировать список их квадратов
  */
-fun removeFillerWords(text: List<String>, vararg fillerWords: String): List<String> {
-    val fillerWordSet = setOf(*fillerWords)
-
-    val res = mutableListOf<String>()
-    for (word in text) {
-        if (word !in fillerWordSet) {
-            res += word
-        }
-    }
-    return res
-}
+fun squares(list: List<Int>) = list.map { it * it }
 
 /**
  * Пример
  *
- * Для заданного текста `text` построить множество встречающихся в нем слов
+ * Из имеющихся целых чисел, заданного через vararg-параметр, сформировать массив их квадратов
  */
-fun buildWordSet(text: List<String>): MutableSet<String> {
-    val res = mutableSetOf<String>()
-    for (word in text) res.add(word)
-    return res
-}
-
+fun squares(vararg array: Int) = squares(array.toList()).toTypedArray()
 
 /**
-
- * Простая
+ * Пример
  *
- * По заданному ассоциативному массиву "студент"-"оценка за экзамен" построить
- * обратный массив "оценка за экзамен"-"список студентов с этой оценкой".
- *
- * Например:
- *   buildGrades(mapOf("Марат" to 3, "Семён" to 5, "Михаил" to 5))
- *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
+ * По заданной строке str определить, является ли она палиндромом.
+ * В палиндроме первый символ должен быть равен последнему, второй предпоследнему и т.д.
+ * Одни и те же буквы в разном регистре следует считать равными с точки зрения данной задачи.
+ * Пробелы не следует принимать во внимание при сравнении символов, например, строка
+ * "А роза упала на лапу Азора" является палиндромом.
  */
-fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
-    val a = mutableMapOf<Int, MutableList<String>>()
-    for ((key, value) in grades) {
-        if (a[value] == null) {
-            a[value] = mutableListOf(key)
-        } else {
-            a[value]!!.add(key)
-        }
-    }
-    return a
-}
-
-/**
- * Простая
- *
- * Определить, входит ли ассоциативный массив a в ассоциативный массив b;
- * это выполняется, если все ключи из a содержатся в b с такими же значениями.
- *
- * Например:
- *   containsIn(mapOf("a" to "z"), mapOf("a" to "z", "b" to "sweet")) -> true
- *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
- */
-fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
-    for ((key) in a) {
-        if (a[key] != b[key]) return false
+fun isPalindrome(str: String): Boolean {
+    val lowerCase = str.toLowerCase().filter { it != ' ' }
+    for (i in 0..lowerCase.length / 2) {
+        if (lowerCase[i] != lowerCase[lowerCase.length - i - 1]) return false
     }
     return true
 }
 
 /**
- * Простая
+ * Пример
  *
- * Удалить из изменяемого ассоциативного массива все записи,
- * которые встречаются в заданном ассоциативном массиве.
- * Записи считать одинаковыми, если и ключи, и значения совпадают.
- *
- * ВАЖНО: необходимо изменить переданный в качестве аргумента
- *        изменяемый ассоциативный массив
- *
- * Например:
- *   subtractOf(a = mutableMapOf("a" to "z"), mapOf("a" to "z"))
- *     -> a changes to mutableMapOf() aka becomes empty
+ * По имеющемуся списку целых чисел, например [3, 6, 5, 4, 9], построить строку с примером их суммирования:
+ * 3 + 6 + 5 + 4 + 9 = 27 в данном случае.
  */
-fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
-    for ((key) in b) {
-        if ((a[key] == b[key])) a.remove(key)
-    }
-}
+fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", postfix = " = ${list.sum()}")
 
 /**
  * Простая
  *
- * Для двух списков людей найти людей, встречающихся в обоих списках.
- * В выходном списке не должно быть повторяюихся элементов,
- * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
+ * Найти модуль заданного вектора, представленного в виде списка v,
+ * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
+ * Модуль пустого вектора считать равным 0.0.
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
-    val x = mutableListOf<String>()
-    for (nameA in a)
-        if ((nameA in b) && (nameA !in x)) x.add(nameA)
-    return x
-}
-
-/**
- * Средняя
- *
- * Объединить два ассоциативных массива `mapA` и `mapB` с парами
- * "имя"-"номер телефона" в итоговый ассоциативный массив, склеивая
- * значения для повторяющихся ключей через запятую.
- * В случае повторяющихся *ключей* значение из mapA должно быть
- * перед значением из mapB.
- *
- * Повторяющиеся *значения* следует добавлять только один раз.
- *
- * Например:
- *   mergePhoneBooks(
- *     mapOf("Emergency" to "112", "Police" to "02"),
- *     mapOf("Emergency" to "911", "Police" to "02")
- *   ) -> mapOf("Emergency" to "112, 911", "Police" to "02")
- */
-fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
-    val a = mutableMapOf<String, String>()
-    for ((service, number) in mapA) {
-        a[service] = number
-        if ((mapA[service] != mapB[service]) && (mapB[service] != null)) a[service] += ", ${mapB[service]}"
-    }
-    for ((service, number) in mapB) {
-        if (mapA[service] == null) a[service] = number
-    }
-    return a
-}
-
-
-/**
- * Средняя
- *
- * Для заданного списка пар "акция"-"стоимость" вернуть ассоциативный массив,
- * содержащий для каждой акции ее усредненную стоимость.
- *
- * Например:
- *   averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0))
- *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
- */
-fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
-    val a = mutableMapOf<String, Double>()
+fun abs(v: List<Double>): Double {
     var x = 0.0
-    var n = 0
-    for ((stock) in stockPrices) {
-        for ((stock1, price) in stockPrices) {
-            if (stock == stock1) {
-                x += price
-                n++
-            }
-        }
-        a[stock] = x / n
-        n = 0
-        x = 0.0
+    return if (v.isEmpty()) {
+        0.0
+    } else {
+        x = v.sum()
+        sqrt(x)
     }
-    return a
+}
+
+/**
+ * Простая
+ *
+ * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
+ */
+fun mean(list: List<Double>): Double = if (list.isNotEmpty()) (list.sum() / list.size) else 0.0
+
+/**
+ * Средняя
+ *
+ * Центрировать заданный список list, уменьшив каждый элемент на среднее арифметическое всех элементов.
+ * Если список пуст, не делать ничего. Вернуть изменённый список.
+ *
+ * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
+ */
+fun center(list: MutableList<Double>): MutableList<Double> {
+    val mean = mean(list)
+    for (i in 0 until list.size) {
+        list[i] -= mean
+    }
+    return list
 }
 
 /**
  * Средняя
  *
- * Входными данными является ассоциативный массив
- * "название товара"-"пара (тип товара, цена товара)"
- * и тип интересующего нас товара.
- * Необходимо вернуть название товара заданного типа с минимальной стоимостью
- * или null в случае, если товаров такого типа нет.
- *
- * Например:
- *   findCheapestStuff(
- *     mapOf("Мария" to ("печенье" to 20.0), "Орео" to ("печенье" to 100.0)),
- *     "печенье"
- *   ) -> "Мария"
+ * Найти скалярное произведение двух векторов равной размерности,
+ * представленные в виде списков a и b. Скалярное произведение считать по формуле:
+ * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    var value = Double.MAX_VALUE
-    var a: String? = null
-    for ((name, pair) in stuff) {
-        if ((pair.first == kind) && (pair.second <= value)) {
-            value = pair.second
-            a = name
+fun times(a: List<Int>, b: List<Int>): Int {
+    var i = 0
+    var c = 0
+    return if (a.isEmpty() || b.isEmpty()) {
+        c
+    } else {
+        while (i < a.size) {
+            c += a[i] * b[i]
+            i++
         }
+        c
     }
-    return a
 }
 
 /**
  * Средняя
  *
- * Для заданного набора символов определить, можно ли составить из него
- * указанное слово (регистр символов игнорируется)
- *
- * Например:
- *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
+ * Рассчитать значение многочлена при заданном x:
+ * p(x) = p0 + p1*x + p2*x^2 + p3*x^3 + ... + pN*x^N.
+ * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
+ * Значение пустого многочлена равно 0 при любом x.
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    var count = 0
-    for (char in word.toLowerCase()) {
-        for (letter in chars) {
-            if (char == letter.toLowerCase()) {
-                count = 1
-            }
-        }
-        if (count == 0) {
-            return false
-        }
-        count = 0
+fun polynom(p: List<Int>, x: Int): Int =
+    p.mapIndexed { index, i -> i * x.toDouble().pow(index.toDouble()) }.sum().toInt()
+
+/**
+ * Средняя
+ *
+ * В заданном списке list каждый элемент, кроме первого, заменить
+ * суммой данного элемента и всех предыдущих.
+ * Например: 1, 2, 3, 4 -> 1, 3, 6, 10.
+ * Пустой список не следует изменять. Вернуть изменённый список.
+ *
+ * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
+ */
+fun accumulate(list: MutableList<Int>): MutableList<Int> {
+    for (i in 1 until list.size) {
+        list[i] += list[i - 1]
     }
-    return true
+    return list
 }
 
 /**
  * Средняя
  *
- * Найти в заданном списке повторяющиеся элементы и вернуть
- * ассоциативный массив с информацией о числе повторений
- * для каждого повторяющегося элемента.
- * Если элемент встречается только один раз, включать его в результат
- * не следует.
- *
- * Например:
- *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
+ * Разложить заданное натуральное число n > 1 на простые множители.
+ * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
+ * Множители в списке должны располагаться по возрастанию.
  */
-fun extractRepeats(list: List<String>): Map<String, Int> {
-    val a = mutableMapOf<String, Int>()
-    for (letter in list)
-        if (list.count { it == letter } > 1) {
-            a[letter] = (list.count { it == letter })
-        }
-    return a
-}
-
-/**
- * Средняя
- *
- * Для заданного списка слов определить, содержит ли он анаграммы
- * (два слова являются анаграммами, если одно можно составить из второго)
- *
- * Например:
- *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
- */
-fun hasAnagrams(words: List<String>): Boolean {
-    val res = mutableListOf<String>()
-    for (i in words) {
-        res += i.toSortedSet().toString()
-    }
-    val a = extractRepeats(res)
-    return a.isNotEmpty()
-}
-
-/**
- * Сложная
- *
- * Для заданного ассоциативного массива знакомых через одно рукопожатие `friends`
- * необходимо построить его максимальное расширение по рукопожатиям, то есть,
- * для каждого человека найти всех людей, с которыми он знаком через любое
- * количество рукопожатий.
- * Считать, что все имена людей являются уникальными, а также что рукопожатия
- * являются направленными, то есть, если Марат знает Свету, то это не означает,
- * что Света знает Марата.
- *
- * Например:
- *   propagateHandshakes(
- *     mapOf(
- *       "Marat" to setOf("Mikhail", "Sveta"),
- *       "Sveta" to setOf("Marat"),
- *       "Mikhail" to setOf("Sveta")
- *     )
- *   ) -> mapOf(
- *          "Marat" to setOf("Mikhail", "Sveta"),
- *          "Sveta" to setOf("Marat", "Mikhail"),
- *          "Mikhail" to setOf("Sveta", "Marat")
- *        )
- */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
-    //https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/union.html
-    //https://kotlinlang.ru/docs/reference/keyword-reference.html
-    //методы брал из первой ссылки, извиняюсь, 4-й урок не успею переделать т.к. в технополисе еще алгоритмы надо сдать
-    //а я все ни как не могу разораться в АВЛ-деревьях
-    //впорос: почему  такая борьба с null? (я даже вопрос на toster.ru задавал ибо не мог понять почему функции
-    // стандартной библиотеки не работают, благо мне подсказали что подставить и скинули 2-ю ссылку)
-    var finalMap = friends.toMutableMap()
-    for ((key, value) in friends) {
-        for (name in value) {
-            if (finalMap[name] == null) {
-                finalMap[name] = setOf()
+fun factorize(n: Int): List<Int> {
+    var a = n
+    val list = arrayListOf1<Int>()
+    var x = 2
+    while (a > 1) {
+        while (a % x == 0) {
+            if (a != 2) {
+                a /= x
+                list.add(x)
             } else {
-                finalMap[name] = finalMap[name]!!.union(finalMap[key]!!)
-                finalMap[key] = finalMap[key]!!.filter { it != key }.toSet()
+                list.add(x)
+                a /= x
+                break
             }
         }
+        if (x == 2) x++
+        else x += 2
     }
-    return finalMap
+    return list.toList()
 }
 
 /**
  * Сложная
  *
- * Для заданного списка неотрицательных чисел и числа определить,
- * есть ли в списке пара чисел таких, что их сумма равна заданному числу.
- * Если да, верните их индексы в виде Pair<Int, Int>;
- * если нет, верните пару Pair(-1, -1).
- *
- * Индексы в результате должны следовать в порядке (меньший, больший).
- *
- * Постарайтесь сделать ваше решение как можно более эффективным,
- * используя то, что вы узнали в данном уроке.
- *
- * Например:
- *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
- *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
+ * Разложить заданное натуральное число n > 1 на простые множители.
+ * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
+ * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    //в основе bubleSort O(n^2)
-    for ((z, i) in list.withIndex()) {
-        for ((l, j) in list.withIndex()) {
-            if (i + j == number && z != l) {
-                return Pair(z, l)
-            }
-        }
+fun factorizeToString(n: Int): String = factorize(n).joinToString("*")
+
+/**
+ * Средняя
+ *
+ * Перевести заданное целое число n >= 0 в систему счисления с основанием base > 1.
+ * Результат перевода вернуть в виде списка цифр в base-ичной системе от старшей к младшей,
+ * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
+ */
+fun convert(n: Int, base: Int): List<Int> {
+    var list = arrayListOf1<Int>()
+    var number = n
+    do {
+        list.add(number % base)
+        number /= base
+    } while (number > 0)
+    return list.reversed().toList()
+}
+
+/**
+ * Сложная
+ *
+ * Перевести заданное целое число n >= 0 в систему счисления с основанием 1 < base < 37.
+ * Результат перевода вернуть в виде строки, цифры более 9 представлять латинскими
+ * строчными буквами: 10 -> a, 11 -> b, 12 -> c и так далее.
+ * Например: n = 100, base = 4 -> 1210, n = 250, base = 14 -> 13c
+ *
+ * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
+ * (например, n.toString(base) и подобные), запрещается.
+ */
+fun convertToString(n: Int, base: Int): String {
+    // я чет подумал, зачем 2 раза писать одно и то же если можно воспользоваться написанной самим собой реализацией
+    var x = convert(n, base)
+    var notStandartNum = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()
+    var i = 0
+    var finalString = ""
+    do {
+        finalString += notStandartNum[x[i]].toString()
+        i++
+    } while (i < x.size)
+    return finalString.toLowerCase()
+}
+
+/**
+ * Средняя
+ *
+ * Перевести число, представленное списком цифр digits от старшей к младшей,
+ * из системы счисления с основанием base в десятичную.
+ * Например: digits = (1, 3, 12), base = 14 -> 250
+ */
+fun decimal(digits: List<Int>, base: Int): Int {
+    var i = 0
+    var finalNum = 0.0
+    var digitsRevers = digits.reversed()
+    while (i < digits.size) {
+        finalNum += digitsRevers[i] * pow(base.toDouble(), i.toDouble())
+        i++
     }
-    return Pair(-1, -1)
+    return finalNum.toInt()
+}
+
+/**
+ * Сложная
+ *
+ * Перевести число, представленное цифровой строкой str,
+ * из системы счисления с основанием base в десятичную.
+ * Цифры более 9 представляются латинскими строчными буквами:
+ * 10 -> a, 11 -> b, 12 -> c и так далее.
+ * Например: str = "13c", base = 14 -> 250
+ *
+ * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
+ * (например, str.toInt(base)), запрещается.
+ */
+fun decimalFromString(str: String, base: Int): Int {
+    var x = ""
+    var num = arrayListOf1<Int>()
+    var i = 0
+
+    while (i < str.length) {
+        num.add(
+            when (str[i].toString()) {
+                "1" -> 1
+                "2" -> 2
+                "3" -> 3
+                "4" -> 4
+                "5" -> 5
+                "6" -> 6
+                "7" -> 7
+                "8" -> 8
+                "9" -> 9
+                "a" -> 10
+                "b" -> 11
+                "c" -> 12
+                "d" -> 13
+                "e" -> 14
+                "f" -> 15
+                "g" -> 16
+                "h" -> 17
+                "i" -> 18
+                "j" -> 19
+                "k" -> 20
+                "l" -> 21
+                "m" -> 22
+                "n" -> 23
+                "o" -> 24
+                "p" -> 25
+                "q" -> 26
+                "r" -> 27
+                "s" -> 28
+                "t" -> 29
+                "u" -> 30
+                "v" -> 31
+                "w" -> 32
+                "x" -> 33
+                "y" -> 34
+                "z" -> 35
+                else -> 0
+            }
+        )
+        i++
+    }
+    return decimal(num, base)
+}
+
+/**
+ * Сложная
+ *
+ * Перевести натуральное число n > 0 в римскую систему.
+ * Римские цифры: 1 = I, 4 = IV, 5 = V, 9 = IX, 10 = X, 40 = XL, 50 = L,
+ * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
+ * Например: 23 = XXIII, 44 = XLIV, 100 = C
+ */
+fun roman(n: Int): String {
+    //не бейте палками, я ещё в колледже решал такую задачку на Java так что реализация с Java библиотеками :)
+    //Принцип решения прост, каждую единицу мы представляем в виде "I" и заменяем "IIII" на "IV" и ТД по списку :)
+    return join("", nCopies(n, "I") as Collection<Any>?)
+        .replace("IIIII", "V")
+        .replace("IIII", "IV")
+        .replace("VV", "X")
+        .replace("VIV", "IX")
+        .replace("XXXXX", "L")
+        .replace("XXXX", "XL")
+        .replace("LL", "C")
+        .replace("LXL", "XC")
+        .replace("CCCCC", "D")
+        .replace("CCCC", "CD")
+        .replace("DD", "M")
+        .replace("DCD", "CM")
 }
 
 /**
  * Очень сложная
  *
- * Входными данными является ассоциативный массив
- * "название сокровища"-"пара (вес сокровища, цена сокровища)"
- * и вместимость вашего рюкзака.
- * Необходимо вернуть множество сокровищ с максимальной суммарной стоимостью,
- * которые вы можете унести в рюкзаке.
- *
- * Перед решением этой задачи лучше прочитать статью Википедии "Динамическое программирование".
- *
- * Например:
- *   bagPacking(
- *     mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
- *     850
- *   ) -> setOf("Кубок")
- *   bagPacking(
- *     mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
- *     450
- *   ) -> emptySet()
+ * Записать заданное натуральное число 1..999 999 прописью по-русски.
+ * Например, 375 = "триста семьдесят пять",
+ * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    //если честно, транслировал свое решение с java (которое опять же разбирали в технополисе
-    //https://ok.ru/video/1856656645809)
-    // на kotlin и чуть чуть перепилил под требования задачи
-    if (treasures.isEmpty()) return setOf("")
-    val n = treasures.size
-    val dp = Array(capacity + 1) { IntArray(n + 1) }
-    val names = ArrayList<String>()
-    val weights = ArrayList<Int>()
-    val costs = ArrayList<Int>()
-    var out = mutableSetOf<String>()
+fun russian(n: Int): String {
 
-    for ((name, pairs) in treasures) {
-        names.add(name)
-        weights.add(pairs.first)
-        costs.add(pairs.second)
-    }
+    //Я приношу свои глубочайшие извинения, но читать реализацию через простые List`ы крайне не удобно,
+    //я просто оставлю реализацию через map
 
-    for (j in 1..n) {
-        for (w in 1..capacity) {
-            if (weights[j - 1] <= w) {
-                dp[w][j] = max(dp[w][j - 1], dp[w - weights[j - 1]][j - 1] + costs[j - 1])
-            } else {
-                dp[w][j] = dp[w][j - 1]
-            }
+    var thousands: Map<Int, String> = linkedMapOf(
+        1 to "тысяча ", 2 to "тысячи ", 3 to "тысячи ", 4 to "тысячи ", 5 to "тысяч ",
+        6 to "тысяч ", 7 to "тысяч ", 8 to "тысяч ", 9 to "тысяч ", 0 to "тысяч "
+    )
+
+    var hundreeds: Map<Int, String> = linkedMapOf(
+        1 to "сто ", 2 to "двести ", 3 to "триста ", 4 to "четыреста ", 5 to "пятьсот ",
+        6 to "шестьсот ", 7 to "семьсот ", 8 to "восемьсот ", 9 to "девятьсот ", 0 to ""
+    )
+    var tens: Map<Int, String> = linkedMapOf(
+        1 to "десять ", 2 to "двадцать ", 3 to "тридцать ", 4 to "сорок ", 5 to "пятьдесят ",
+        6 to "шестьдесят ", 7 to "семьдесят ", 8 to "восемьдесят ", 9 to "девяносто ", 0 to ""
+    )
+    var justNum: Map<Int, String> = linkedMapOf(
+        1 to "одна ", 2 to "две ", 3 to "три ", 4 to "четыре ", 5 to "пять ",
+        6 to "шесть ", 7 to "семь ", 8 to "восемь ", 9 to "девять ", 0 to ""
+    )
+    var notStandartNum: Map<Int, String> = linkedMapOf(
+        1 to "одиннадцать ", 2 to "двенадцать ", 3 to "тринадцать ", 4 to "четырнадцать ", 5 to "пятнадцать ",
+        6 to "шестнадцать ", 7 to "семнадцать ", 8 to "восемнадцать ", 9 to "девятнадцать ", 0 to "десять "
+    )
+    var exeptionInJustNum: Map<Int, String> = linkedMapOf(
+        1 to "один ", 2 to "два ", 3 to "три ", 4 to "четыре ", 5 to "пять ",
+        6 to "шесть ", 7 to "семь ", 8 to "восемь ", 9 to "девять ", 0 to ""
+    )
+
+    var x = n.toString()
+
+    if (n.toString().length > 5) {
+        if (x[1].toString().toInt() == 1 && x[4].toString().toInt() == 1) {
+            return trim(
+                hundreeds[x[0].toString().toInt()] +
+                        notStandartNum[x[2].toString().toInt()] +
+                        "тысяч " +
+                        hundreeds[x[3].toString().toInt()] +
+                        notStandartNum[x[5].toString().toInt()]
+            )
+        } else if (x[1].toString().toInt() == 1) {
+            return trim(
+                hundreeds[x[0].toString().toInt()] +
+                        notStandartNum[x[2].toString().toInt()] +
+                        "тысяч " +
+                        hundreeds[x[3].toString().toInt()] +
+                        tens[x[4].toString().toInt()] +
+                        exeptionInJustNum[x[5].toString().toInt()]
+            )
+        } else if (x[4].toString().toInt() == 1) {
+            return trim(
+                hundreeds[x[0].toString().toInt()] +
+                        tens[x[1].toString().toInt()] +
+                        justNum[x[2].toString().toInt()] +
+                        thousands[x[2].toString().toInt()] +
+                        hundreeds[x[3].toString().toInt()] +
+                        notStandartNum[x[5].toString().toInt()]
+            )
+        } else {
+            return trim(
+                hundreeds[x[0].toString().toInt()] +
+                        tens[x[1].toString().toInt()] +
+                        justNum[x[2].toString().toInt()] +
+                        thousands[x[2].toString().toInt()] +
+                        hundreeds[x[3].toString().toInt()] +
+                        tens[x[4].toString().toInt()] +
+                        exeptionInJustNum[x[5].toString().toInt()]
+            )
         }
-    }
-    var j = n
-    var w = capacity
-    hightLoop@ while (j >= 1) {
-
-        while (w >= 0) {
-            if (dp[w][j] == dp[w][j - 1]) {
-                j--
-                continue@hightLoop
-            } else {
-                out.add(names[j - 1])
-            }
-            w--
+    } else if (n.toString().length > 4) {
+        if (x[0].toString().toInt() == 1 && x[3].toString().toInt() == 1) {
+            return trim(
+                notStandartNum[x[1].toString().toInt()] +
+                        "тысяч " +
+                        hundreeds[x[2].toString().toInt()] +
+                        notStandartNum[x[4].toString().toInt()]
+            )
+        } else if (x[0].toString().toInt() == 1) {
+            return trim(
+                notStandartNum[x[1].toString().toInt()] +
+                        "тысяч " +
+                        hundreeds[x[2].toString().toInt()] +
+                        tens[x[3].toString().toInt()] +
+                        exeptionInJustNum[x[4].toString().toInt()]
+            )
+        } else if (x[3].toString().toInt() == 1) {
+            return trim(
+                tens[x[0].toString().toInt()] +
+                        justNum[x[1].toString().toInt()] +
+                        thousands[x[1].toString().toInt()] +
+                        hundreeds[x[2].toString().toInt()] +
+                        notStandartNum[x[4].toString().toInt()]
+            )
+        } else {
+            return trim(
+                tens[x[0].toString().toInt()] +
+                        justNum[x[1].toString().toInt()] +
+                        thousands[x[1].toString().toInt()] +
+                        hundreeds[x[2].toString().toInt()] +
+                        tens[x[3].toString().toInt()] +
+                        exeptionInJustNum[x[4].toString().toInt()]
+            )
         }
-        j--
-        var w = capacity
+
+    } else if (n.toString().length > 3) {
+        return if (x[3].toString().toInt() == 1) {
+            trim(
+                justNum[x[0].toString().toInt()] + thousands[x[0].toString().toInt()] +
+                        hundreeds[x[1].toString().toInt()] + notStandartNum[x[3].toString().toInt()]
+            )
+        } else {
+            trim(
+                justNum[x[0].toString().toInt()] + thousands[x[0].toString().toInt()] +
+                        hundreeds[x[1].toString().toInt()] + tens[x[2].toString().toInt()] +
+                        justNum[x[3].toString().toInt()]
+            )
+        }
+    } else if (n.toString().length > 2) {
+        return if (x[1].toString().toInt() == 1) {
+            trim(hundreeds[x[0].toString().toInt()] + notStandartNum[x[2].toString().toInt()])
+        } else {
+            trim(hundreeds[x[0].toString().toInt()] + tens[x[1].toString().toInt()] + exeptionInJustNum[x[2].toString().toInt()])
+        }
+
+    } else if (n.toString().length > 1) {
+        return if (x[0].toString().toInt() == 1) {
+            trim(notStandartNum[x[1].toString().toInt()].toString())
+        } else {
+            trim(tens[x[0].toString().toInt()] + exeptionInJustNum[x[1].toString().toInt()])
+        }
+    } else if (n.toString().length == 1) {
+        return trim(exeptionInJustNum[x.toInt()].toString())
     }
-    return out
+    return ""
 }
+
+fun trim(n: String): String = n.substring(0, n.length - 1)
