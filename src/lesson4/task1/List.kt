@@ -252,10 +252,10 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString("*")
 fun convert(n: Int, base: Int): List<Int> {
     var list = arrayListOf1<Int>()
     var number = n
-    while (number > 0) {
+    do {
         list.add(number % base)
         number /= base
-    }
+    } while (number > 0)
     return list.reversed().toList()
 }
 
@@ -276,10 +276,10 @@ fun convertToString(n: Int, base: Int): String {
     var notStandartNum = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()
     var i = 0
     var finalString = ""
-    while (i < x.size) {
+    do {
         finalString += notStandartNum[x[i]].toString()
         i++
-    }
+    } while (i < x.size)
     return finalString.toLowerCase()
 }
 
@@ -408,7 +408,7 @@ fun russian(n: Int): String {
     )
 
     var hundreeds: Map<Int, String> = linkedMapOf(
-        1 to "сто ", 2 to "двести ", 3 to "триста ", 4 to "четыресто ", 5 to "пятьсот ",
+        1 to "сто ", 2 to "двести ", 3 to "триста ", 4 to "четыреста ", 5 to "пятьсот ",
         6 to "шестьсот ", 7 to "семьсот ", 8 to "восемьсот ", 9 to "девятьсот ", 0 to ""
     )
     var tens: Map<Int, String> = linkedMapOf(
@@ -529,7 +529,7 @@ fun russian(n: Int): String {
         } else {
             trim(tens[x[0].toString().toInt()] + exeptionInJustNum[x[1].toString().toInt()])
         }
-    } else if (n.toString().length == 1){
+    } else if (n.toString().length == 1) {
         return trim(exeptionInJustNum[x.toInt()].toString())
     }
     return ""
