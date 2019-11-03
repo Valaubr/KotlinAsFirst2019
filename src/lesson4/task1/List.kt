@@ -9,6 +9,9 @@ import java.lang.Math.*
 import java.util.Collections.nCopies
 import kotlin.math.sqrt
 import kotlin.collections.arrayListOf as arrayListOf1
+import java.util.Locale
+import kotlin.math.pow
+
 
 /**
  * Пример
@@ -125,9 +128,7 @@ fun abs(v: List<Double>): Double {
     return if (v.isEmpty()) {
         0.0
     } else {
-        for (element in v) {
-            x += sqr(element)
-        }
+        x = v.sum()
         sqrt(x)
     }
 }
@@ -137,16 +138,7 @@ fun abs(v: List<Double>): Double {
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double {
-    var x = 0.0
-    if (list.isEmpty()) {
-        return 0.0
-    }
-    for (element in list) {
-        x += element
-    }
-    return x / list.size
-}
+fun mean(list: List<Double>): Double = if (list.isNotEmpty()) (list.sum() / list.size) else 0.0
 
 /**
  * Средняя
@@ -157,17 +149,11 @@ fun mean(list: List<Double>): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    var i = 0
-    var mean = mean(list)
-    if (list.isEmpty()) {
-        return list
-    } else {
-        while (i < list.size) {
-            list[i] -= mean
-            i++
-        }
-        return list
+    val mean = mean(list)
+    for (i in 0 until list.size) {
+        list[i] -= mean
     }
+    return list
 }
 
 /**
@@ -199,24 +185,8 @@ fun times(a: List<Int>, b: List<Int>): Int {
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0 при любом x.
  */
-fun polynom(p: List<Int>, x: Int): Int {
-    var i = 0
-    var z = 0.0
-    return if (p.isEmpty()) {
-        0
-    } else {
-        while (i < p.size) {
-            if (i == 0) {
-                z += p[i]
-                i++
-            } else {
-                z += p[i] * pow(x.toDouble(), i.toDouble())
-                i++
-            }
-        }
-        z.toInt()
-    }
-}
+fun polynom(p: List<Int>, x: Int): Int =
+    p.mapIndexed { index, i -> i * x.toDouble().pow(index.toDouble()) }.sum().toInt()
 
 /**
  * Средняя
@@ -229,21 +199,10 @@ fun polynom(p: List<Int>, x: Int): Int {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
-    // да ну в кои то веки понял как forEach работает, странно правда что я не могу указать it += before,
-    // но раз можно сделать функцией, буду делать функцией...
-    var before = 0
-    var i = 0
-    return when {
-        list.isEmpty() -> list
-        else -> {
-            while (i < list.size) {
-                list[i] += before
-                before = list[i]
-                i++
-            }
-            list
-        }
+    for (i in 1 until list.size) {
+        list[i] += list[i - 1]
     }
+    return list
 }
 
 /**
@@ -255,7 +214,7 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
  */
 fun factorize(n: Int): List<Int> {
     var a = n
-    var list = arrayListOf1<Int>()
+    val list = arrayListOf1<Int>()
     var x = 2
     while (a > 1) {
         while (a % x == 0) {
@@ -281,16 +240,7 @@ fun factorize(n: Int): List<Int> {
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String {
-    var x = factorize(n)
-    var i = 0
-    var returnedStr = ""
-    while (i < x.size) {
-        returnedStr += x[i].toString() + "*"
-        i++
-    }
-    return trim(returnedStr)
-}
+fun factorizeToString(n: Int): String = factorize(n).joinToString("*")
 
 /**
  * Средняя
@@ -302,30 +252,9 @@ fun factorizeToString(n: Int): String {
 fun convert(n: Int, base: Int): List<Int> {
     var list = arrayListOf1<Int>()
     var number = n
-    var c = 0
-    var d = 0
-    if (number > 9) {
-        while (true) {
-            d = number % base
-            list.add(d)
-            c = number / base
-            number /= base
-            if ((number / base) == 0) {
-                list.add(number % base)
-                break
-            }
-        }
-    } else {
-        while (true) {
-
-            d = number % base
-            list.add(d)
-            c = number / base
-            number /= base
-            if ((number / base) == 0) {
-                break
-            }
-        }
+    while (number > 0) {
+        list.add(number % base)
+        number /= base
     }
     return list.reversed().toList()
 }
@@ -349,10 +278,6 @@ fun convertToString(n: Int, base: Int): String {
     var finalString = ""
     while (i < x.size) {
         finalString += notStandartNum[x[i]].toString()
-
-        if (i == 0 && finalString == "0") {
-            finalString = ""
-        }
         i++
     }
     return finalString.toLowerCase()
@@ -604,8 +529,8 @@ fun russian(n: Int): String {
         } else {
             trim(tens[x[0].toString().toInt()] + exeptionInJustNum[x[1].toString().toInt()])
         }
-    } else {
-        trim(exeptionInJustNum[x.toInt()].toString())
+    } else if (n.toString().length == 1){
+        return trim(exeptionInJustNum[x.toInt()].toString())
     }
     return ""
 }
