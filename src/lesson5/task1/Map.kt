@@ -401,9 +401,9 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     if (treasures.isEmpty()) return setOf("")
     val n = treasures.size
     val dp = Array(capacity + 1) { IntArray(n + 1) }
-    var names = ArrayList<String>()
-    var weights = ArrayList<Int>()
-    var costs = ArrayList<Int>()
+    val names = ArrayList<String>()
+    val weights = ArrayList<Int>()
+    val costs = ArrayList<Int>()
     var out = mutableSetOf<String>()
 
     for ((name, pairs) in treasures) {
@@ -416,13 +416,26 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         for (w in 1..capacity) {
             if (weights[j - 1] <= w) {
                 dp[w][j] = max(dp[w][j - 1], dp[w - weights[j - 1]][j - 1] + costs[j - 1])
-                if (dp[w][j] != dp[w][j - 1] && dp[w][j - 1] - w != 0) {
-                    out.add(names[j - 1])
-                }
             } else {
                 dp[w][j] = dp[w][j - 1]
             }
         }
+    }
+    var j = n
+    var w = capacity
+    hightLoop@ while (j >= 1) {
+
+        while (w >= 0) {
+            if (dp[w][j] == dp[w][j - 1]) {
+                j--
+                continue@hightLoop
+            } else {
+                out.add(names[j - 1])
+            }
+            w--
+        }
+        j--
+        var w = capacity
     }
     return out
 }
