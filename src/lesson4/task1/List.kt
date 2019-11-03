@@ -474,7 +474,7 @@ fun russian(n: Int): String {
                 notStandartNum[x[1].toString().toInt()] +
                         "тысяч " +
                         hundreeds[x[2].toString().toInt()] +
-                        notStandartNum[x[3].toString().toInt()]
+                        notStandartNum[x[4].toString().toInt()]
             )
         } else if (x[0].toString().toInt() == 1) {
             return trim(
@@ -490,7 +490,7 @@ fun russian(n: Int): String {
                         justNum[x[1].toString().toInt()] +
                         thousands[x[1].toString().toInt()] +
                         hundreeds[x[2].toString().toInt()] +
-                        notStandartNum[x[3].toString().toInt()]
+                        notStandartNum[x[4].toString().toInt()]
             )
         } else {
             return trim(
@@ -504,13 +504,13 @@ fun russian(n: Int): String {
         }
 
     } else if (n.toString().length > 3) {
-        if (x[3].toString().toInt() == 1) {
-            return trim(
+        return if (x[3].toString().toInt() == 1) {
+            trim(
                 justNum[x[0].toString().toInt()] + thousands[x[0].toString().toInt()] +
                         hundreeds[x[1].toString().toInt()] + notStandartNum[x[3].toString().toInt()]
             )
         } else {
-            return trim(
+            trim(
                 justNum[x[0].toString().toInt()] + thousands[x[0].toString().toInt()] +
                         hundreeds[x[1].toString().toInt()] + tens[x[2].toString().toInt()] +
                         justNum[x[3].toString().toInt()]
