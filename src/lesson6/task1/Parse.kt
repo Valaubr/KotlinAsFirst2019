@@ -2,6 +2,10 @@
 
 package lesson6.task1
 
+import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
+import kotlin.math.abs
+
 /**
  * Пример
  *
@@ -69,7 +73,9 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dateStrToDigit(str: String): String {
+    TODO()
+}
 
 /**
  * Средняя
@@ -157,7 +163,25 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше либо равны нуля.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    var workedDesc = description.split(";")
+    var maximum = 0.0
+    var returned = ""
+    for (i in workedDesc) {
+        var check = i.trim().split(" ")
+        if (check.size > 2 || check.size < 2) {
+            return ""
+        } else if (check[1].toDoubleOrNull() == null){
+            return ""
+        } else if (check[1].toDouble() < 0.0) {
+            return ""
+        } else if (check[1].toDouble() > maximum) {
+            returned = check[0]
+            maximum = check[1].toDouble()
+        }
+    }
+    return returned
+}
 
 /**
  * Сложная
@@ -208,4 +232,130 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+var limitCount = 0
+var active = 0;
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    val arr = Array(cells) { i -> i * 0 }
+    var counter = 0
+    var subCount = 0
+    active = cells / 2
+    limitCount = 0
+
+    // сделаем синтаксический анализ строки на наличие ошибочного ввода (к слову, это можно делать и во время исполнения
+    // но если мы представим что программируем для реально существующего устройства, нахождение ошибки в процессе
+    // выполнения не допустимо, т.к. по факту мы будем иметь испорченный материал, а значит, и тапки полетят в нас...)
+    for (i in commands.indices) {
+        if (commands[i] == ']') {
+            counter--
+            if (counter == -1) {
+                throw IllegalArgumentException("Некорректный ввод");
+            }
+        } else if (commands[i] == '[') {
+            counter++
+        } else if (commands[i] != '>' && commands[i] != '<' && commands[i] != '+'
+            && commands[i] != '-' && commands[i] != ' '
+        ) {
+            throw IllegalArgumentException("Некорректный ввод");
+        }
+    }
+
+    if (counter > 0) {
+        throw IllegalArgumentException("Некорректный ввод")
+    }
+    for (i in commands.indices) {
+        when {
+            commands[i] == '>' && subCount == 0 -> {
+                active++
+            }
+            commands[i] == '<' && subCount == 0 -> {
+                active--
+            }
+            commands[i] == '+' && subCount == 0 -> {
+                arr[active]++
+            }
+            commands[i] == '-' && subCount == 0 -> {
+                arr[active]--
+            }
+            commands[i] == '[' -> {
+                subCount++
+                limitCount++
+                helpFun(i, commands, limit, arr)
+
+            }
+            commands[i] == ']' -> {
+                subCount--
+            }
+        }
+        limitCount++
+        if (limitCount >= limit) {
+            return arr.toList()
+        }
+        if (active >= cells) {
+            throw IllegalStateException("Out")
+        }
+    }
+    return arr.toList()
+}
+
+// если в циклах будут циклы то самый красивый способ избежать такой белиберды - рекурсия
+
+fun helpFun(
+    i: Int,
+    commands: String,
+    limit: Int,
+    arr: Array<Int>
+): Array<Int> {
+    var i1 = i + 1
+    var subCount = 0;
+    var drop = 0;
+
+    if (arr[active] == 0) {
+        return arr
+    }
+    while (subCount != -1) {
+        when {
+            commands[i1] == '>' && drop == 0 -> {
+                active++
+                limitCount++
+            }
+            commands[i1] == '<' && drop == 0 -> {
+                active--
+                limitCount++
+            }
+            commands[i1] == '+' && drop == 0 -> {
+                arr[active]++
+                limitCount++
+
+            }
+            commands[i1] == '-' && drop == 0 -> {
+                arr[active]--
+                limitCount++
+            }
+            commands[i1] == '[' -> {
+                subCount++
+                drop++
+                limitCount++
+                helpFun(i1, commands, limit, arr)
+            }
+            commands[i1] == ']' -> {
+                subCount--
+                drop--
+                limitCount++
+            }
+        }
+        if (active >= arr.size) {
+            throw IllegalStateException("Out")
+        }
+        i1++
+        if (limitCount == limit) {
+            return arr
+        }
+    }
+    if (limitCount > limit) {
+        return arr
+    }
+    if (abs(arr[active]) > 0) {
+        helpFun(i, commands, limit, arr)
+    }
+    return arr
+}

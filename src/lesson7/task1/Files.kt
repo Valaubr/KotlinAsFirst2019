@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import java.io.File
+import java.lang.StringBuilder
 
 /**
  * Пример
@@ -361,7 +362,13 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlLists(inputName: String, outputName: String) {
-    TODO()
+    var output = StringBuilder()
+    output.append("<html><body>")
+    var read = File(inputName).bufferedReader().readLine()
+    var check = read.split(" ")
+    if ((check.size - 2) / 4 == 1){
+
+    }
 }
 
 /**
