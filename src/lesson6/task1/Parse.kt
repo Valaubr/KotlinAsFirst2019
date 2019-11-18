@@ -290,7 +290,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         if (limitCount >= limit) {
             return arr.toList()
         }
-        if (active >= cells) {
+        if (active >= cells || active < 0) {
             throw IllegalStateException("Out")
         }
     }
