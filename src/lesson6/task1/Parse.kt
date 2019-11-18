@@ -343,7 +343,7 @@ fun helpFun(
                 limitCount++
             }
         }
-        if (active >= arr.size) {
+        if (active >= arr.size || active < 0) {
             throw IllegalStateException("Out")
         }
         i1++
