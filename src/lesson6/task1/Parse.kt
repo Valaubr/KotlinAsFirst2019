@@ -171,7 +171,7 @@ fun mostExpensive(description: String): String {
         var check = i.trim().split(" ")
         if (check.size > 2 || check.size < 2) {
             return ""
-        } else if (check[1].toDoubleOrNull() == null){
+        } else if (check[1].toDoubleOrNull() == null) {
             return ""
         } else if (check[1].toDouble() < 0.0) {
             return ""
@@ -341,6 +341,9 @@ fun helpFun(
                 subCount--
                 drop--
                 limitCount++
+                if (commands[i1 - 1] == '[') {
+                    return arr
+                }
             }
         }
         if (active >= arr.size || active < 0) {
