@@ -309,10 +309,10 @@ fun helpFun(
     var subCount = 0;
     var drop = 0;
 
-    if (arr[active] == 0) {
-        return arr
-    }
     while (subCount != -1) {
+        if (arr[active] == 0) {
+            return arr
+        }
         when {
             commands[i1] == '>' && drop == 0 -> {
                 active++
@@ -331,12 +331,13 @@ fun helpFun(
                 drop++
                 helpFun(i1, commands, limit, arr)
             }
+            commands[i1 - 1] == '[' && commands[i1] == ']' && arr[active] != 0 -> {
+                limitCount = limit
+                return arr
+            }
             commands[i1] == ']' -> {
                 subCount--
                 drop--
-                if (commands[i1 - 1] == '[') {
-                    return arr
-                }
             }
         }
         if (active >= arr.size || active < 0) {
