@@ -316,19 +316,24 @@ fun helpFun(
         when {
             commands[i1] == '>' && drop == 0 -> {
                 active++
+                limitCount++
             }
             commands[i1] == '<' && drop == 0 -> {
                 active--
+                limitCount++
             }
             commands[i1] == '+' && drop == 0 -> {
                 arr[active]++
+                limitCount++
             }
             commands[i1] == '-' && drop == 0 -> {
                 arr[active]--
+                limitCount++
             }
             commands[i1] == '[' -> {
                 subCount++
                 drop++
+                limitCount++
                 helpFun(i1, commands, limit, arr)
             }
             commands[i1 - 1] == '[' && commands[i1] == ']' && arr[active] != 0 -> {
@@ -336,15 +341,18 @@ fun helpFun(
                 return arr
             }
             commands[i1] == ']' -> {
+                limitCount++
                 subCount--
                 drop--
+            }
+            commands[i1] == ' ' -> {
+                limitCount++
             }
         }
         if (active >= arr.size || active < 0) {
             throw IllegalStateException("")
         }
         i1++
-        limitCount++
         if (limitCount == limit) {
             return arr
         }
