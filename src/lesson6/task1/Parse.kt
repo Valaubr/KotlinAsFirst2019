@@ -302,7 +302,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             return arr.toList()
         }
         if (active >= cells || active < 0) {
-            throw IllegalStateException("")
+            throw IllegalStateException()
         }
     }
     return arr.toList()
