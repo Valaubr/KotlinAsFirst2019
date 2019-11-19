@@ -287,11 +287,12 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                 subCount++
                 limitCount++
                 helpFun(i, commands, limit, arr)
-
             }
             commands[i] == ']' -> {
+                if (subCount == 0) {
+                    limitCount++
+                }
                 subCount--
-                limitCount++
             }
         }
 
@@ -338,6 +339,9 @@ fun helpFun(
                 arr[active]--
                 limitCount++
             }
+            commands[i1] == ' ' && drop == 0 -> {
+                limitCount++
+            }
             commands[i1] == '[' -> {
                 subCount++
                 drop++
@@ -352,9 +356,6 @@ fun helpFun(
                 limitCount++
                 subCount--
                 drop--
-            }
-            commands[i1] == ' ' -> {
-                limitCount++
             }
         }
         if (active >= arr.size || active < 0) {
