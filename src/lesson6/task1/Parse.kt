@@ -266,15 +266,22 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         when {
             commands[i] == '>' && subCount == 0 -> {
                 active++
+                limitCount++
             }
             commands[i] == '<' && subCount == 0 -> {
                 active--
+                limitCount++
             }
             commands[i] == '+' && subCount == 0 -> {
                 arr[active]++
+                limitCount++
             }
             commands[i] == '-' && subCount == 0 -> {
                 arr[active]--
+                limitCount++
+            }
+            commands[i] == ' ' && subCount == 0 -> {
+                limitCount++
             }
             commands[i] == '[' -> {
                 subCount++
@@ -284,9 +291,10 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             }
             commands[i] == ']' -> {
                 subCount--
+                limitCount++
             }
         }
-        limitCount++
+
         if (limitCount >= limit) {
             return arr.toList()
         }
