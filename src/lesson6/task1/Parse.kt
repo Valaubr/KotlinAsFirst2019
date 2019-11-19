@@ -291,7 +291,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             return arr.toList()
         }
         if (active >= cells || active < 0) {
-            throw IllegalStateException("Out")
+            throw IllegalStateException("")
         }
     }
     return arr.toList()
@@ -316,40 +316,34 @@ fun helpFun(
         when {
             commands[i1] == '>' && drop == 0 -> {
                 active++
-                limitCount++
             }
             commands[i1] == '<' && drop == 0 -> {
                 active--
-                limitCount++
             }
             commands[i1] == '+' && drop == 0 -> {
                 arr[active]++
-                limitCount++
-
             }
             commands[i1] == '-' && drop == 0 -> {
                 arr[active]--
-                limitCount++
             }
             commands[i1] == '[' -> {
                 subCount++
                 drop++
-                limitCount++
                 helpFun(i1, commands, limit, arr)
             }
             commands[i1] == ']' -> {
                 subCount--
                 drop--
-                limitCount++
                 if (commands[i1 - 1] == '[') {
                     return arr
                 }
             }
         }
         if (active >= arr.size || active < 0) {
-            throw IllegalStateException("Out")
+            throw IllegalStateException("")
         }
         i1++
+        limitCount++
         if (limitCount == limit) {
             return arr
         }
