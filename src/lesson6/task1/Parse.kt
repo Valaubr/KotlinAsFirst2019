@@ -309,10 +309,10 @@ fun helpFun(
     var subCount = 0;
     var drop = 0;
 
+    if (arr[active] == 0) {
+        return arr
+    }
     while (subCount != -1) {
-        if (arr[active] == 0) {
-            return arr
-        }
         when {
             commands[i1] == '>' && drop == 0 -> {
                 active++
