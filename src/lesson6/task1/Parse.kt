@@ -297,21 +297,11 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         }
 
         if (limitCount >= limit) {
-            if (arr[0] == 233 && arr[1] == 32) {
-                arr[0] = 234
-            }
             return arr.toList()
         }
         if (active >= cells || active < 0) {
             throw IllegalStateException("")
         }
-    }
-    //assertEquals(listOf(234, 32), computeDeviceCells(2, "++++++++[+++++++++++++++++++++[+++<]+++++-++[+]]", 500))
-    //если честно, я не нашел проблему при решении данной задачи да и потрати пару часов на пересчет с бумажкой я
-    //получил 233 в 0 индексе...
-    //подхак с упованием на удачу неповтарения вариантов.
-    if (arr[0] == 233 && arr[1] == 32) {
-        arr[0] = 234
     }
     return arr.toList()
 }
@@ -363,7 +353,9 @@ fun helpFun(
                 return arr
             }
             commands[i1] == ']' -> {
-                limitCount++
+                if (drop == 0) {
+                    limitCount++
+                }
                 subCount--
                 drop--
             }
