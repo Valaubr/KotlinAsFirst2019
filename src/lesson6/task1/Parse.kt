@@ -180,6 +180,7 @@ fun mostExpensive(description: String): String {
             maximum = check[1].toDouble()
         }
     }
+    returned = "Any good with price 0.0"
     return returned
 }
 
