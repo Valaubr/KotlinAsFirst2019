@@ -169,19 +169,21 @@ fun mostExpensive(description: String): String {
     var returned = ""
     for (i in workedDesc) {
         var check = i.trim().split(" ")
-        if (check.size > 2 || check.size < 2) {
-            return ""
-        } else if (check[1].toDoubleOrNull() == null) {
-            return ""
-        } else if (check[1].toDouble() < 0.0) {
-            return ""
-        } else if (check[1].toDouble() > maximum) {
-            returned = check[0]
-            maximum = check[1].toDouble()
+        when {
+            check.size > 2 || check.size < 2 -> return ""
+            check[1].toDoubleOrNull() == null -> return ""
+            check[1].toDouble() < 0.0 -> return ""
+            check[1].toDouble() > maximum -> {
+                returned = check[0]
+                maximum = check[1].toDouble()
+            }
         }
     }
-    returned = "Any good with price 0.0"
-    return returned
+    return if (returned == "") {
+        "Any good with price 0.0"
+    } else {
+        returned
+    }
 }
 
 /**
