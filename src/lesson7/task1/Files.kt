@@ -4,6 +4,7 @@ package lesson7.task1
 
 import java.io.File
 import java.io.FileWriter
+import java.lang.StringBuilder
 import java.util.regex.Matcher
 
 
@@ -262,50 +263,89 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
 
-    val read = File(inputName).bufferedReader().readLines()
+    var final = StringBuilder()
+    var read = File(inputName).bufferedReader().readText()
     var write = FileWriter(outputName)
 
-    val pattern0 = Regex("\\*.+?\\*")
-    val pattern1 = Regex("\\*\\*.+?\\*\\*")
-    val pattern2 = Regex("\\~\\~.+?\\~\\~")
-    val pattern00 = Regex("\\*.+?\\*").toPattern()
-    val pattern01 = Regex("\\*\\*.+?\\*\\*").toPattern()
-    val pattern02 = Regex("\\~\\~.+?\\~\\~").toPattern()
+    val regular0 = Regex("\\*")
+    val regular1 = Regex("\\*\\*")
+    val regular2 = Regex("\\~\\~")
+    val regular3 = Regex("\\n\\n")
+    val pattern0 = Regex("\\*").toPattern()
+    val pattern1 = Regex("\\*\\*").toPattern()
+    val pattern2 = Regex("\\~\\~").toPattern()
+    val pattern3 = Regex("\\n\\n").toPattern()
 
-    var finalStr = "<html><body><p>"
+    var countP = 1
+    var countI = 0
+    var countB = 0
+    var countS = 0
 
-    for (i in read) {
-        if (i != "") {
-            var j = i
-
-            var matcher: Matcher = pattern02.matcher(j)
-            while (matcher.find()) {
-                j = j.replaceFirst(
-                    pattern2, "<s>${matcher.group().replace("~~", "")}</s>"
-                )
-            }
-
-            matcher = pattern01.matcher(j)
-            while (matcher.find()) {
-                j = j.replaceFirst(
-                    pattern1, "<b>${matcher.group().replace("**", "")}</b>"
-                )
-            }
-
-
-            matcher = pattern00.matcher(j)
-            while (matcher.find()) {
-                j = j.replaceFirst(
-                    pattern0, "<i>${matcher.group().replace("*", "")}</i>"
-                )
-            }
-            finalStr += j
+    read = read.replace(Regex("[\\s\\t]"), "")
+    write.write("<html><body><p>")
+    var matcher: Matcher = pattern3.matcher(read)
+    while (matcher.find()) {
+        read = if (countP == 1) {
+            countP--
+            read.replaceFirst(
+                regular3, "</p>"
+            )
         } else {
-            finalStr += "</p><p>"
+            countP++
+            read.replaceFirst(
+                regular3, "<p>"
+            )
         }
     }
-    finalStr += "</p></body></html>"
-    write.write(finalStr)
+    read = read.replace("\\n".toRegex(), "")
+    matcher = pattern2.matcher(read)
+    while (matcher.find()) {
+        read = if (countS == 1) {
+            countS--
+            read.replaceFirst(
+                regular2, "</s>"
+            )
+        } else {
+            countS++
+            read.replaceFirst(
+                regular2, "<s>"
+            )
+        }
+    }
+
+    matcher = pattern1.matcher(read)
+    while (matcher.find()) {
+        read = if (countB == 1) {
+            countB--
+            read.replaceFirst(
+                regular1, "</b>"
+            )
+        } else {
+            countB++
+            read.replaceFirst(
+                regular1, "<b>"
+            )
+        }
+    }
+
+
+    matcher = pattern0.matcher(read)
+    while (matcher.find()) {
+        read = if (countI == 1){
+            countI--
+            read.replaceFirst(
+                regular0, "</i>"
+            )
+        } else {
+            countI++
+            read.replaceFirst(
+                regular0, "<i>"
+            )
+        }
+
+    }
+    write.write(read)
+    write.write("</p></body></html>")
     write.flush()
     write.close()
 }
