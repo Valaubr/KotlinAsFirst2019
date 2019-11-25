@@ -263,41 +263,29 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
 
-    var final = StringBuilder()
     var read = File(inputName).bufferedReader().readText()
     var write = FileWriter(outputName)
 
     val regular0 = Regex("\\*")
     val regular1 = Regex("\\*\\*")
     val regular2 = Regex("\\~\\~")
-    val regular3 = Regex("\\n\\n")
+    val regular3 = Regex("\\\\n\\\\n")
     val pattern0 = Regex("\\*").toPattern()
     val pattern1 = Regex("\\*\\*").toPattern()
     val pattern2 = Regex("\\~\\~").toPattern()
-    val pattern3 = Regex("\\n\\n").toPattern()
+    val pattern3 = Regex("\\\\n\\\\n").toPattern()
 
-    var countP = 1
     var countI = 0
     var countB = 0
     var countS = 0
 
-    read = read.replace(Regex("[\\s\\t]"), "")
     write.write("<html><body><p>")
     var matcher: Matcher = pattern3.matcher(read)
     while (matcher.find()) {
-        read = if (countP == 1) {
-            countP--
-            read.replaceFirst(
-                regular3, "</p>"
-            )
-        } else {
-            countP++
-            read.replaceFirst(
-                regular3, "<p>"
-            )
-        }
+        read = read.replaceFirst(
+            regular3, "</p><p>"
+        )
     }
-    read = read.replace("\\n".toRegex(), "")
     matcher = pattern2.matcher(read)
     while (matcher.find()) {
         read = if (countS == 1) {
@@ -331,7 +319,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
 
     matcher = pattern0.matcher(read)
     while (matcher.find()) {
-        read = if (countI == 1){
+        read = if (countI == 1) {
             countI--
             read.replaceFirst(
                 regular0, "</i>"
@@ -342,8 +330,11 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 regular0, "<i>"
             )
         }
-
     }
+    read = read.replaceFirst("\\\\n".toRegex(), "")
+
+    read = read.replace("\\\\t".toRegex(), "")
+
     write.write(read)
     write.write("</p></body></html>")
     write.flush()
