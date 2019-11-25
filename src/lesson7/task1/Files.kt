@@ -265,12 +265,12 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val read = File(inputName).bufferedReader().readLines()
     var write = FileWriter(outputName)
 
-    val pattern0 = Regex("\\*.*?\\*")
-    val pattern1 = Regex("\\*\\*.*?\\*\\*")
-    val pattern2 = Regex("\\~\\~.*?\\~\\~")
-    val pattern00 = Regex("\\*.*?\\*").toPattern()
-    val pattern01 = Regex("\\*\\*.*?\\*\\*").toPattern()
-    val pattern02 = Regex("\\~\\~.*?\\~\\~").toPattern()
+    val pattern0 = Regex("\\*.+?\\*")
+    val pattern1 = Regex("\\*\\*.+?\\*\\*")
+    val pattern2 = Regex("\\~\\~.+?\\~\\~")
+    val pattern00 = Regex("\\*.+?\\*").toPattern()
+    val pattern01 = Regex("\\*\\*.+?\\*\\*").toPattern()
+    val pattern02 = Regex("\\~\\~.+?\\~\\~").toPattern()
 
     var finalStr = "<html><body><p>"
 
