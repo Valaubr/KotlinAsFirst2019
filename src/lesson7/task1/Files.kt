@@ -5,7 +5,9 @@ package lesson7.task1
 import java.io.File
 import java.io.FileWriter
 import java.lang.StringBuilder
+import java.util.*
 import java.util.regex.Matcher
+import kotlin.math.sqrt
 
 
 /**
@@ -331,9 +333,9 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             )
         }
     }
-    read = read.replaceFirst("\\\\n".toRegex(), "")
-
+    read = read.replace("\\\\n".toRegex(), "")
     read = read.replace("\\\\t".toRegex(), "")
+    read = read.replace("</p><p></p><p>", "</p><p>")
 
     write.write(read)
     write.write("</p></body></html>")
@@ -441,14 +443,115 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlLists(inputName: String, outputName: String) {
-//    var output = StringBuilder()
-//    output.write("<html><body>")
-//    var read = File(inputName).bufferedReader().readLine()
-//    var check = read.split(" ")
-//    if ((check.size - 2) / 4 == 1){
-//
-//    }
-    //TODO
+    var read = File(inputName).bufferedReader().readText().split("\n")
+    var q = Stack<String>()
+    var write = FileWriter(outputName)
+    var lvl = 0
+    var prelvl = -1
+    var out = ""
+    write.write("<html><body>")
+    for (i in read) {
+        if (i != "") {
+            lvl = 0
+            for (j in i) {
+                if (j == ' ') {
+                    lvl++
+                } else {
+                    break
+                }
+            }
+
+            if (i[lvl] == '*' && lvl > prelvl) {
+                q.push("<ul>")
+                q.push("<li>")
+                write.write("<ul><li>${i.replace(Regex("[\\s\\n\\t\\*]|(\\d+\\.+\\s)"), "")}")
+                prelvl = lvl
+            } else if ((i[lvl].toString() + i[lvl + 1].toString() + i[lvl + 2].toString()).matches("\\d+\\.+\\s".toRegex()) && lvl > prelvl) {
+                q.push("<ol>")
+                q.push("<li>")
+                write.write("<ol><li>${i.replace(Regex("[\\s\\n\\t\\*]|(\\d+\\.+\\s)"), "")}")
+                prelvl = lvl
+            } else if (lvl < prelvl) {
+                if (lvl == 0) {
+                    while (q.size != 1) {
+                        when {
+                            q.peek() == "<ul>" -> {
+                                write.write("</ul>")
+                                q.pop()
+                            }
+                            q.peek() == "<ol>" -> {
+                                write.write("</ol>")
+                                q.pop()
+                            }
+                            q.peek() == "<li>" -> {
+                                write.write("</li>")
+                                q.pop()
+                            }
+                        }
+                    }
+                } else {
+                    for (l in 0..2) {
+                        when {
+                            q.peek() == "<ul>" -> {
+                                write.write("</ul>")
+                                q.pop()
+                            }
+                            q.peek() == "<ol>" -> {
+                                write.write("</ol>")
+                                q.pop()
+                            }
+                            q.peek() == "<li>" -> {
+                                write.write("</li>")
+                                q.pop()
+                            }
+                        }
+                    }
+                }
+                q.push("<li>")
+                write.write("<li>")
+                write.write(i.replace(Regex("[\\s\\n\\t\\*]|(\\d+\\.+\\s)"), ""))
+                prelvl = lvl
+            } else if (lvl == prelvl) {
+                when {
+                    q.peek() == "<ul>" -> {
+                        write.write("</ul>")
+                        q.pop()
+                    }
+                    q.peek() == "<ol>" -> {
+                        write.write("</ol>")
+                        q.pop()
+                    }
+                    q.peek() == "<li>" -> {
+                        write.write("</li>")
+                        q.pop()
+                    }
+                }
+                write.write("<li>${i.replace("[\\s\\n\\t\\*]|(\\d+\\.+\\s)".toRegex(), "")}")
+                q.push("<li>")
+            }
+        }
+    }
+    while (!q.isEmpty()) {
+        while (q.size != 0) {
+            when {
+                q.peek() == "<ul>" -> {
+                    write.write("</ul>")
+                    q.pop()
+                }
+                q.peek() == "<ol>" -> {
+                    write.write("</ol>")
+                    q.pop()
+                }
+                q.peek() == "<li>" -> {
+                    write.write("</li>")
+                    q.pop()
+                }
+            }
+        }
+    }
+    write.write("</body></html>")
+    write.flush()
+    write.close()
 }
 
 /**
