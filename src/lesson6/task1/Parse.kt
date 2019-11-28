@@ -180,7 +180,7 @@ fun mostExpensive(description: String): String {
         }
     }
     return if (returned == "") {
-        "Any good with price 0.0"
+        workedDesc[0].split(" ")[0]
     } else {
         returned
     }
