@@ -396,15 +396,15 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     //если честно, транслировал свое решение с java (которое опять же разбирали в технополисе
-    //https://ok.ru/video/1856656645809)
-    // на kotlin и чуть чуть перепилил под требования задачи
+    //https://ok.ru/video/1856656645809) в kotlin и чуть чуть перепилил под требования задачи
     if (treasures.isEmpty()) return setOf("")
     val n = treasures.size
     val dp = Array(capacity + 1) { IntArray(n + 1) }
     val names = ArrayList<String>()
     val weights = ArrayList<Int>()
     val costs = ArrayList<Int>()
-    var out = mutableSetOf<String>()
+    val helper = mutableMapOf<String, Int>()
+    val out = mutableSetOf<String>()
 
     for ((name, pairs) in treasures) {
         names.add(name)
@@ -416,26 +416,29 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         for (w in 1..capacity) {
             if (weights[j - 1] <= w) {
                 dp[w][j] = max(dp[w][j - 1], dp[w - weights[j - 1]][j - 1] + costs[j - 1])
+                if (dp[w][j - 1] < dp[w - weights[j - 1]][j - 1] + costs[j - 1]) {
+                    helper.put(names[j - 1], treasures[names[j - 1]]!!.second)
+                }
             } else {
                 dp[w][j] = dp[w][j - 1]
             }
         }
     }
-    var j = n
-    var w = capacity
-    hightLoop@ while (j >= 1) {
 
-        while (w >= 0) {
-            if (dp[w][j] == dp[w][j - 1]) {
-                j--
-                continue@hightLoop
-            } else {
-                out.add(names[j - 1])
+    var finHelp = helper.toList().reversed()
+    var g = 0
+
+    for (i in finHelp) {
+        if (finHelp.size > 1) {
+            if (i.second + g <= dp[capacity][n]) {
+                out.add(i.first)
+                g += i.second
             }
-            w--
+        } else if (helper.size == 1) {
+            out.add(finHelp[0].first)
+            return out
         }
-        j--
-        var w = capacity
     }
+
     return out
 }
