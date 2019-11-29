@@ -292,6 +292,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  */
 fun hasAnagrams(words: List<String>): Boolean {
     //я вот задумался, нужн ли мне уникаллизировать слова, но с другой стороны, (Тор, Тор) должны дать TRUE хотя не анаграммы
+    //Или анаграммы... Я вот не задумывался но являются ли эквивалентные слова анаграммами?
     val set = sortedSetOf<String>()
     for (i in words) {
         //унникаллизируем буковки и будет нам счастье :D
