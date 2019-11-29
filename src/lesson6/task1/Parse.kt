@@ -368,7 +368,7 @@ fun helpFun(
             }
         }
         if (active >= arr.size || active < 0) {
-            throw IllegalStateException()
+            return throw IllegalStateException()
         }
         i1++
         if (limitCount == limit) {
