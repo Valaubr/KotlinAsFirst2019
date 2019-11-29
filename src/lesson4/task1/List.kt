@@ -123,15 +123,8 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double {
-    var x = 0.0
-    return if (v.isEmpty()) {
-        0.0
-    } else {
-        x = v.sum()
-        sqrt(x)
-    }
-}
+fun abs(v: List<Double>): Double = TODO()
+
 
 /**
  * Простая
@@ -164,17 +157,11 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
 fun times(a: List<Int>, b: List<Int>): Int {
-    var i = 0
-    var c = 0
-    return if (a.isEmpty() || b.isEmpty()) {
-        c
-    } else {
-        while (i < a.size) {
-            c += a[i] * b[i]
-            i++
-        }
-        c
+    var returned = 0
+    if (a.size == b.size) {
+        for (i in a.indices) returned += a[i] * b[i]
     }
+    return returned
 }
 
 /**
@@ -250,7 +237,7 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString("*")
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
 fun convert(n: Int, base: Int): List<Int> {
-    var list = arrayListOf1<Int>()
+    val list = arrayListOf1<Int>()
     var number = n
     do {
         list.add(number % base)
@@ -272,14 +259,18 @@ fun convert(n: Int, base: Int): List<Int> {
  */
 fun convertToString(n: Int, base: Int): String {
     // я чет подумал, зачем 2 раза писать одно и то же если можно воспользоваться написанной самим собой реализацией
-    var x = convert(n, base)
-    var notStandartNum = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()
+    if (n == 0) return "0"
+    val x = convert(n, base)
     var i = 0
     var finalString = ""
-    do {
-        finalString += notStandartNum[x[i]].toString()
+    while (i < x.size) {
+        finalString += if (x[i] > 9) {
+            'a' + (x[i] % base - 10)
+        } else {
+            x[i]
+        }
         i++
-    } while (i < x.size)
+    }
     return finalString.toLowerCase()
 }
 
@@ -292,8 +283,16 @@ fun convertToString(n: Int, base: Int): String {
  */
 fun decimal(digits: List<Int>, base: Int): Int {
     var i = 0
+//    val total = digits.foldRightIndexed(0) { i, accumulator, value ->
+//        accumulator + value * pow(base.toDouble(), i.toDouble()).toInt()
+//    }
+//    немного не понимаю, как это работает, если верить этой таблице:
+//    https://www.cheatography.com/xantier/cheat-sheets/kotlin-collection-extensions/
+//    то я просто обхожу справа на лево лямбдой, но вычисляется не верно...
+//    а ещё из за лямбды отладчик в ногу стреляет...
+
     var finalNum = 0.0
-    var digitsRevers = digits.reversed()
+    val digitsRevers = digits.reversed()
     while (i < digits.size) {
         finalNum += digitsRevers[i] * pow(base.toDouble(), i.toDouble())
         i++
@@ -314,54 +313,14 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int {
-    var x = ""
-    var num = arrayListOf1<Int>()
+    var returned = 0
     var i = 0
-
-    while (i < str.length) {
-        num.add(
-            when (str[i].toString()) {
-                "1" -> 1
-                "2" -> 2
-                "3" -> 3
-                "4" -> 4
-                "5" -> 5
-                "6" -> 6
-                "7" -> 7
-                "8" -> 8
-                "9" -> 9
-                "a" -> 10
-                "b" -> 11
-                "c" -> 12
-                "d" -> 13
-                "e" -> 14
-                "f" -> 15
-                "g" -> 16
-                "h" -> 17
-                "i" -> 18
-                "j" -> 19
-                "k" -> 20
-                "l" -> 21
-                "m" -> 22
-                "n" -> 23
-                "o" -> 24
-                "p" -> 25
-                "q" -> 26
-                "r" -> 27
-                "s" -> 28
-                "t" -> 29
-                "u" -> 30
-                "v" -> 31
-                "w" -> 32
-                "x" -> 33
-                "y" -> 34
-                "z" -> 35
-                else -> 0
-            }
-        )
-        i++
+    for (i in str) {
+        returned *= base
+        returned += if (i.isDigit()) (i - '0')
+        else (i - 'a' + 10)
     }
-    return decimal(num, base)
+    return returned
 }
 
 /**
@@ -401,34 +360,36 @@ fun russian(n: Int): String {
 
     //Я приношу свои глубочайшие извинения, но читать реализацию через простые List`ы крайне не удобно,
     //я просто оставлю реализацию через map
+    // Можно я не буду пока это переделывать :)))))))
+    //Тут до дедлайна совсем чуть чуть :(
 
-    var thousands: Map<Int, String> = linkedMapOf(
+    val thousands: Map<Int, String> = linkedMapOf(
         1 to "тысяча ", 2 to "тысячи ", 3 to "тысячи ", 4 to "тысячи ", 5 to "тысяч ",
         6 to "тысяч ", 7 to "тысяч ", 8 to "тысяч ", 9 to "тысяч ", 0 to "тысяч "
     )
 
-    var hundreeds: Map<Int, String> = linkedMapOf(
+    val hundreeds: Map<Int, String> = linkedMapOf(
         1 to "сто ", 2 to "двести ", 3 to "триста ", 4 to "четыреста ", 5 to "пятьсот ",
         6 to "шестьсот ", 7 to "семьсот ", 8 to "восемьсот ", 9 to "девятьсот ", 0 to ""
     )
-    var tens: Map<Int, String> = linkedMapOf(
+    val tens: Map<Int, String> = linkedMapOf(
         1 to "десять ", 2 to "двадцать ", 3 to "тридцать ", 4 to "сорок ", 5 to "пятьдесят ",
         6 to "шестьдесят ", 7 to "семьдесят ", 8 to "восемьдесят ", 9 to "девяносто ", 0 to ""
     )
-    var justNum: Map<Int, String> = linkedMapOf(
+    val justNum: Map<Int, String> = linkedMapOf(
         1 to "одна ", 2 to "две ", 3 to "три ", 4 to "четыре ", 5 to "пять ",
         6 to "шесть ", 7 to "семь ", 8 to "восемь ", 9 to "девять ", 0 to ""
     )
-    var notStandartNum: Map<Int, String> = linkedMapOf(
+    val notStandartNum: Map<Int, String> = linkedMapOf(
         1 to "одиннадцать ", 2 to "двенадцать ", 3 to "тринадцать ", 4 to "четырнадцать ", 5 to "пятнадцать ",
         6 to "шестнадцать ", 7 to "семнадцать ", 8 to "восемнадцать ", 9 to "девятнадцать ", 0 to "десять "
     )
-    var exeptionInJustNum: Map<Int, String> = linkedMapOf(
+    val exeptionInJustNum: Map<Int, String> = linkedMapOf(
         1 to "один ", 2 to "два ", 3 to "три ", 4 to "четыре ", 5 to "пять ",
         6 to "шесть ", 7 to "семь ", 8 to "восемь ", 9 to "девять ", 0 to ""
     )
 
-    var x = n.toString()
+    val x = n.toString()
 
     if (n.toString().length > 5) {
         if (x[1].toString().toInt() == 1 && x[4].toString().toInt() == 1) {
