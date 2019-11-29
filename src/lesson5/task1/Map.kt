@@ -274,9 +274,9 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
  */
 fun extractRepeats(list: List<String>): Map<String, Int> {
     val a = mutableMapOf<String, Int>()
-    for (letter in list)
-        if (list.count { it == letter } > 1) {
-            a[letter] = (list.count { it == letter })
+    for (i in list)
+        if (list.count { it == i } > 1) {
+            a[i] = (list.count { it == i })
         }
     return a
 }
@@ -291,12 +291,15 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
 fun hasAnagrams(words: List<String>): Boolean {
-    val res = mutableListOf<String>()
+    //я вот задумался, нужн ли мне уникаллизировать слова, но с другой стороны, (Тор, Тор) должны дать TRUE хотя не анаграммы
+    val set = sortedSetOf<String>()
     for (i in words) {
-        res.add(i.toSet().toString())
+        //унникаллизируем буковки и будет нам счастье :D
+        if (!set.add(i.toSortedSet().toString())){
+            return true
+        }
     }
-    val a = extractRepeats(res)
-    return a.isNotEmpty()
+    return false
 }
 
 /**
