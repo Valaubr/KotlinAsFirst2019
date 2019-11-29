@@ -264,9 +264,6 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
-    //Проваливает нагрузочный тест :((((
-    //А так хотелось
     var read = File(inputName).bufferedReader().readText()
     var write = FileWriter(outputName)
 
@@ -283,6 +280,8 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     var countB = 0
     var countS = 0
 
+    read = read.replace("\\\\\\\\\\\\\\\\t".toRegex(), "♠♠♠")
+    read = read.replace("\\\\\\\\\\\\\\\\n".toRegex(), "♦♦♦")
     read = read.replace("\\r".toRegex(), "")
     read = read.replace("\\\\t".toRegex(), "")
     write.write("<html><body><p>")
@@ -339,6 +338,9 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     }
     read = read.replace("\\\\n".toRegex(), "")
     read = read.replace("</p><p></p><p>", "</p><p>")
+
+    read = read.replace("♠♠♠".toRegex(), "\\\\\\\\\\\\\\\\t")
+    read = read.replace("♦♦♦".toRegex(), "\\\\\\\\\\\\\\\\n")
 
     write.write(read)
     write.write("</p></body></html>")
