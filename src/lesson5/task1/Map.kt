@@ -293,7 +293,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
 fun hasAnagrams(words: List<String>): Boolean {
     val res = mutableListOf<String>()
     for (i in words) {
-        res += i.toSortedSet().toString()
+        res.add(i.toSet().toString())
     }
     val a = extractRepeats(res)
     return a.isNotEmpty()
@@ -324,24 +324,7 @@ fun hasAnagrams(words: List<String>): Boolean {
  *        )
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
-    //https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/union.html
-    //https://kotlinlang.ru/docs/reference/keyword-reference.html
-    //методы брал из первой ссылки, извиняюсь, 4-й урок не успею переделать т.к. в технополисе еще алгоритмы надо сдать
-    //а я все ни как не могу разораться в АВЛ-деревьях
-    //впорос: почему  такая борьба с null? (я даже вопрос на toster.ru задавал ибо не мог понять почему функции
-    // стандартной библиотеки не работают, благо мне подсказали что подставить и скинули 2-ю ссылку)
-    var finalMap = friends.toMutableMap()
-    for ((key, value) in friends) {
-        for (name in value) {
-            if (finalMap[name] == null) {
-                finalMap[name] = setOf()
-            } else {
-                finalMap[name] = finalMap[name]!!.union(finalMap[key]!!)
-                finalMap[key] = finalMap[key]!!.filter { it != key }.toSet()
-            }
-        }
-    }
-    return finalMap
+    TODO()
 }
 
 /**
@@ -396,14 +379,14 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
     //если честно, транслировал свое решение с java (которое опять же разбирали в технополисе
-    //https://ok.ru/video/1856656645809) в kotlin и чуть чуть перепилил под требования задачи
+    //https://ok.ru/video/1856656645809 в kotlin и чуть чуть перепилил под требования задачи
     if (treasures.isEmpty()) return setOf("")
     val n = treasures.size
     val dp = Array(capacity + 1) { IntArray(n + 1) }
+    val p = Array(capacity + 1) { IntArray(n + 1) }
     val names = ArrayList<String>()
     val weights = ArrayList<Int>()
     val costs = ArrayList<Int>()
-    val helper = mutableMapOf<String, Int>()
     val out = mutableSetOf<String>()
 
     for ((name, pairs) in treasures) {
@@ -416,8 +399,10 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         for (w in 1..capacity) {
             if (weights[j - 1] <= w) {
                 dp[w][j] = max(dp[w][j - 1], dp[w - weights[j - 1]][j - 1] + costs[j - 1])
-                if (dp[w][j - 1] < dp[w - weights[j - 1]][j - 1] + costs[j - 1]) {
-                    helper.put(names[j - 1], treasures[names[j - 1]]!!.second)
+                if (dp[w][j - 1] <= dp[w - weights[j - 1]][j - 1] + costs[j - 1]) {
+                    p[w][j - 1] = 1
+                } else {
+                    p[w][j - 1] = 0
                 }
             } else {
                 dp[w][j] = dp[w][j - 1]
@@ -425,19 +410,22 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         }
     }
 
-    var finHelp = helper.toList().reversed()
-    var g = 0
-
-    for (i in finHelp) {
-        if (finHelp.size > 1) {
-            if (i.second + g <= dp[capacity][n]) {
-                out.add(i.first)
-                g += i.second
+    //Тьфу, не могу восстаноить ответ :((((((((((
+    var k = n
+    var u = 0
+    for (i in 1..n) {
+        for (j in 1..capacity) {
+            if (dp[u][k] < dp[j - 1][k]) {
+                u = j - 1
             }
-        } else if (helper.size == 1) {
-            out.add(finHelp[0].first)
-            return out
         }
+    }
+    while (k > 0) {
+        if (p[u][k] == 1) {
+            out.add(u.toString())
+            u -= weights[k]
+        }
+        k--
     }
 
     return out
