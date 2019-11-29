@@ -271,16 +271,18 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val regular0 = Regex("\\*")
     val regular1 = Regex("\\*\\*")
     val regular2 = Regex("\\~\\~")
-    val regular3 = Regex("\\\\n\\\\n")
+    val regular3 = Regex("\\n\\n")
     val pattern0 = Regex("\\*").toPattern()
     val pattern1 = Regex("\\*\\*").toPattern()
     val pattern2 = Regex("\\~\\~").toPattern()
-    val pattern3 = Regex("\\\\n\\\\n").toPattern()
+    val pattern3 = Regex("\\n\\n").toPattern()
 
     var countI = 0
     var countB = 0
     var countS = 0
 
+    read = read.replace("\\r".toRegex(), "")
+    read = read.replace("\\\\t".toRegex(), "")
     write.write("<html><body><p>")
     var matcher: Matcher = pattern3.matcher(read)
     while (matcher.find()) {
@@ -334,7 +336,6 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         }
     }
     read = read.replace("\\\\n".toRegex(), "")
-    read = read.replace("\\\\t".toRegex(), "")
     read = read.replace("</p><p></p><p>", "</p><p>")
 
     write.write(read)
@@ -443,12 +444,19 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlLists(inputName: String, outputName: String) {
-    var read = File(inputName).bufferedReader().readText().split("\n")
-    var q = Stack<String>()
-    var write = FileWriter(outputName)
+    val read = File(inputName).bufferedReader().readText().split("\n")
+    val q = Stack<String>()
+    val write = FileWriter(outputName)
     var lvl = 0
     var prelvl = -1
-    var out = ""
+
+    //ну и решеньйице :D
+    //напишу небольшую документацию что бы не все так плохо было:
+    //по сути всё что я делаю это играю высотой и последовательностью открытых тегов
+    //теги хранятся в стеке (LIFO) и в зависимости уровня извлекаются и добавляются
+    //к слову об уровнях, я слежу только за предыдущим и текущим уровнем, хранить больше в принципе не требуется,
+    //т.к. в случае если мы не возвращаемся на 0 уровень мы должны сгрузить 3 последних тега, в ином случае до самого
+    //нижнего
     write.write("<html><body>")
     for (i in read) {
         if (i != "") {
