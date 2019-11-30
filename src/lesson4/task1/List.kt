@@ -465,7 +465,7 @@ fun russian(n: Int): String {
         }
 
     } else if (n.toString().length > 3) {
-        return if (x[3].toString().toInt() == 1) {
+        return if (x[2].toString().toInt() == 1) {
             trim(
                 justNum[x[0].toString().toInt()] + thousands[x[0].toString().toInt()] +
                         hundreeds[x[1].toString().toInt()] + notStandartNum[x[3].toString().toInt()]
@@ -474,7 +474,7 @@ fun russian(n: Int): String {
             trim(
                 justNum[x[0].toString().toInt()] + thousands[x[0].toString().toInt()] +
                         hundreeds[x[1].toString().toInt()] + tens[x[2].toString().toInt()] +
-                        justNum[x[3].toString().toInt()]
+                        exeptionInJustNum[x[3].toString().toInt()]
             )
         }
     } else if (n.toString().length > 2) {
