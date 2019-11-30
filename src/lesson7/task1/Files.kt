@@ -4,6 +4,7 @@ package lesson7.task1
 
 import java.io.File
 import java.io.FileWriter
+import java.io.Writer
 import java.util.*
 import java.util.regex.Matcher
 
@@ -262,6 +263,8 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
+    //Не могу понять почему периодически в этталонном решении остаются \n \r & \t а в моём нет...
+    TODO()
     val read = File(inputName).bufferedReader().readText().split("\\n\\n")
     val write = FileWriter(outputName)
 
@@ -606,6 +609,86 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val out = FileWriter(outputName)
+    var list = mutableListOf<String>()
+    var firstC = 0
+    var helpStr = ""
+    var minusString = ""
+    var spaceCount = ""
+    out.write(" $lhv | $rhv\n")
+    if (lhv >= rhv) {
+        for (i in lhv.toString()) {
+            if (helpStr == "" || helpStr.trim().toInt() / rhv == 0) {
+                helpStr += i
+                if (firstC > 0) {
+                    for (l in 0..list.last().length - helpStr.length) {
+                        spaceCount += " "
+                    }
+                    list.add(spaceCount + helpStr)
+                    spaceCount = ""
+//                    for (j in helpStr) {
+//                        minusString += "-"
+//                    }
+//                    minusString = ""
+                }
+            }
+            if (helpStr.trim().toInt() / rhv > 0) {
+                if (list.size > 0) {
+                    if (helpStr[0] != '0') {
+                        for (l in 1..list.last().length - (helpStr.length + 1)) {
+                            spaceCount += " "
+                        }
+                    } else {
+                        for (l in 0 until list.last().length - helpStr.length) {
+                            spaceCount += " "
+                        }
+                    }
+                }
+                list.add(spaceCount + "-" + (helpStr.trim().toInt() - helpStr.trim().toInt() % rhv).toString())
+                for (j in "-" + (helpStr.trim().toInt() - helpStr.trim().toInt() % rhv).toString()) {
+                    minusString += "-"
+                }
+                list.add(spaceCount + minusString)
+                minusString = ""
+                spaceCount = ""
+                helpStr = (helpStr.trim().toInt() % rhv).toString()
+                firstC++
+            } else if (helpStr.trim().toInt() / rhv == 0 && firstC > 0) {
+                for (l in 0..list.last().length - (helpStr.length + 1)) {
+                    spaceCount += " "
+                }
+                list.add("$spaceCount-0")
+                list.add("$spaceCount--")
+                spaceCount = ""
+            }
+        }
+        for (l in 0..list.last().length - (helpStr.length + 1)) {
+            spaceCount += " "
+        }
+        list.add(spaceCount + helpStr)
+        spaceCount = ""
+
+        for (i in 0.."$lhv | ".length - list[0].length) {
+            spaceCount += " "
+        }
+        list[0] = (list[0] + spaceCount + lhv / rhv)
+        for (i in list) {
+            out.write(i + "\n")
+        }
+    } else {
+        list.add("-0")
+        list.add("--")
+        for (i in 0.."$lhv | ".length - 2) {
+            spaceCount += " "
+        }
+        list[0] = (list[0] + spaceCount + 0)
+        list.add(" $lhv")
+        for (i in list) {
+            out.write(i + "\n")
+        }
+    }
+
+    out.flush()
+    out.close()
 }
 
