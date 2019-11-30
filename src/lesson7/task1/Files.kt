@@ -341,8 +341,8 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     read = read.replace("\\\\n".toRegex(), "")
     read = read.replace("</p><p></p><p>", "</p><p>")
 
-    read = read.replace("MarkTextToReturnALostedParam2".toRegex(), "\\\\\\\\t")
-    read = read.replace("MarkTextToReturnALostedParam1".toRegex(), "\\\\\\\\n")
+    read = read.replace("MarkTextToReturnALostedParam2".toRegex(), "\\\\\\\\ t")
+    read = read.replace("MarkTextToReturnALostedParam1".toRegex(), "\\\\\\\\ n")
 
     write.write(read)
     write.write("</p></body></html>")
