@@ -270,20 +270,16 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val regular0 = Regex("\\*")
     val regular1 = Regex("\\*\\*")
     val regular2 = Regex("\\~\\~")
-    val regular3 = Regex("\\n\\n")
+    val regular3 = Regex("\\\\n\\\\n")
     val pattern0 = Regex("\\*").toPattern()
     val pattern1 = Regex("\\*\\*").toPattern()
     val pattern2 = Regex("\\~\\~").toPattern()
-    val pattern3 = Regex("\\n\\n").toPattern()
+    val pattern3 = Regex("\\\\n\\\\n").toPattern()
 
     var countI = 0
     var countB = 0
     var countS = 0
 
-    read = read.replace("\\\\\\\\\\\\\\\\t".toRegex(), "♠♠♠")
-    read = read.replace("\\\\\\\\\\\\\\\\n".toRegex(), "♦♦♦")
-    read = read.replace("\\r".toRegex(), "")
-    read = read.replace("\\\\t".toRegex(), "")
     write.write("<html><body><p>")
     var matcher: Matcher = pattern3.matcher(read)
     while (matcher.find()) {
@@ -336,11 +332,17 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             )
         }
     }
+
+    read = read.replace("\\\\\\\\t".toRegex(), "MarkTextToReturnALostedParam2")
+    read = read.replace("\\\\\\\\n".toRegex(), "MarkTextToReturnALostedParam1")
+    read = read.replace("\\\\r".toRegex(), "")
+    read = read.replace("\\\\t".toRegex(), "")
+
     read = read.replace("\\\\n".toRegex(), "")
     read = read.replace("</p><p></p><p>", "</p><p>")
 
-    read = read.replace("♠♠♠".toRegex(), "\\\\\\\\\\\\\\\\t")
-    read = read.replace("♦♦♦".toRegex(), "\\\\\\\\\\\\\\\\n")
+    read = read.replace("MarkTextToReturnALostedParam2".toRegex(), "\\\\\\\\t")
+    read = read.replace("MarkTextToReturnALostedParam1".toRegex(), "\\\\\\\\n")
 
     write.write(read)
     write.write("</p></body></html>")
