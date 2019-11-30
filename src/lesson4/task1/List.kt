@@ -3,13 +3,10 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
-import lesson1.task1.sqr
 import org.junit.experimental.theories.internal.ParameterizedAssertionError.join
 import java.lang.Math.*
 import java.util.Collections.nCopies
 import kotlin.math.sqrt
-import kotlin.collections.arrayListOf as arrayListOf1
-import java.util.Locale
 import kotlin.math.pow
 
 
@@ -123,7 +120,11 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double = TODO()
+fun abs(v: List<Double>): Double {
+    if (v.isNotEmpty())
+        return sqrt(v.sumByDouble { it * it })
+    return 0.0
+}
 
 
 /**
@@ -201,7 +202,7 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
  */
 fun factorize(n: Int): List<Int> {
     var a = n
-    val list = arrayListOf1<Int>()
+    val list = mutableListOf<Int>()
     var x = 2
     while (a > 1) {
         while (a % x == 0) {
@@ -217,7 +218,7 @@ fun factorize(n: Int): List<Int> {
         if (x == 2) x++
         else x += 2
     }
-    return list.toList()
+    return list
 }
 
 /**
@@ -237,7 +238,7 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString("*")
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
 fun convert(n: Int, base: Int): List<Int> {
-    val list = arrayListOf1<Int>()
+    val list = mutableListOf<Int>()
     var number = n
     do {
         list.add(number % base)
