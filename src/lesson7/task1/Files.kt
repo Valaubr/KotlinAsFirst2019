@@ -4,10 +4,8 @@ package lesson7.task1
 
 import java.io.File
 import java.io.FileWriter
-import java.lang.StringBuilder
 import java.util.*
 import java.util.regex.Matcher
-import kotlin.math.sqrt
 
 
 /**
@@ -264,87 +262,65 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    var read = File(inputName).bufferedReader().readText()
-    var write = FileWriter(outputName)
-
-    val regular0 = Regex("\\*")
-    val regular1 = Regex("\\*\\*")
-    val regular2 = Regex("\\~\\~")
-    val regular3 = Regex("\\\\n\\\\n")
-    val pattern0 = Regex("\\*").toPattern()
-    val pattern1 = Regex("\\*\\*").toPattern()
-    val pattern2 = Regex("\\~\\~").toPattern()
-    val pattern3 = Regex("\\\\n\\\\n").toPattern()
+    val read = File(inputName).bufferedReader().readText().split("\\n\\n")
+    val write = FileWriter(outputName)
 
     var countI = 0
     var countB = 0
     var countS = 0
 
     write.write("<html><body><p>")
-    var matcher: Matcher = pattern3.matcher(read)
-    while (matcher.find()) {
-        read = read.replaceFirst(
-            regular3, "</p><p>"
-        )
-    }
-    matcher = pattern2.matcher(read)
-    while (matcher.find()) {
-        read = if (countS == 1) {
-            countS--
-            read.replaceFirst(
-                regular2, "</s>"
-            )
-        } else {
-            countS++
-            read.replaceFirst(
-                regular2, "<s>"
-            )
+    for (i in read) {
+        var j = i
+        var searchPattern: Matcher = Regex("\\*\\*\\*").toPattern().matcher(j)
+
+        while (searchPattern.find()) {
+            if (countB == 0 && countI == 0) {
+                j = j.replaceFirst("\\*\\*\\*".toRegex(), "<b><i>")
+                countB++
+                countI++
+            } else {
+                j = j.replaceFirst("\\*\\*\\*".toRegex(), "</b></i>")
+                countB--
+                countI--
+            }
         }
-    }
+        searchPattern = Regex("\\*\\*").toPattern().matcher(j)
 
-    matcher = pattern1.matcher(read)
-    while (matcher.find()) {
-        read = if (countB == 1) {
-            countB--
-            read.replaceFirst(
-                regular1, "</b>"
-            )
-        } else {
-            countB++
-            read.replaceFirst(
-                regular1, "<b>"
-            )
+        while (searchPattern.find()) {
+            if (countB == 0) {
+                j = j.replaceFirst("\\*\\*".toRegex(), "<b>")
+                countB++
+            } else {
+                j = j.replaceFirst("\\*\\*".toRegex(), "</b>")
+                countB--
+            }
         }
-    }
 
-
-    matcher = pattern0.matcher(read)
-    while (matcher.find()) {
-        read = if (countI == 1) {
-            countI--
-            read.replaceFirst(
-                regular0, "</i>"
-            )
-        } else {
-            countI++
-            read.replaceFirst(
-                regular0, "<i>"
-            )
+        searchPattern = Regex("\\*").toPattern().matcher(j)
+        while (searchPattern.find()) {
+            if (countI == 0) {
+                j = j.replaceFirst("\\*".toRegex(), "<i>")
+                countI++
+            } else {
+                j = j.replaceFirst("\\*".toRegex(), "</i>")
+                countI--
+            }
         }
+
+        searchPattern = Regex("~~").toPattern().matcher(j)
+        while (searchPattern.find()) {
+            if (countS == 0) {
+                j = j.replaceFirst("~~".toRegex(), "<s>")
+                countS++
+            } else {
+                j = j.replaceFirst("~~".toRegex(), "</s>")
+                countS--
+            }
+        }
+        write.write(j)
+        write.write("<p></p>")
     }
-
-    read = read.replace("\\\\\\\\t".toRegex(), "MarkTextToReturnALostedParam2")
-    read = read.replace("\\\\\\\\n".toRegex(), "MarkTextToReturnALostedParam1")
-    read = read.replace("\\\\r".toRegex(), "")
-    read = read.replace("\\\\t".toRegex(), "")
-
-    read = read.replace("\\\\n".toRegex(), "")
-    read = read.replace("</p><p></p><p>", "</p><p>")
-
-    read = read.replace("MarkTextToReturnALostedParam2".toRegex(), "\\\\\\\\ t")
-    read = read.replace("MarkTextToReturnALostedParam1".toRegex(), "\\\\\\\\ n")
-
-    write.write(read)
     write.write("</p></body></html>")
     write.flush()
     write.close()
@@ -474,7 +450,6 @@ fun markdownToHtmlLists(inputName: String, outputName: String) {
                     break
                 }
             }
-
             if (i[lvl] == '*' && lvl > prelvl) {
                 q.push("<ul>")
                 q.push("<li>")
