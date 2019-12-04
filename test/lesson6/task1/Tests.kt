@@ -115,6 +115,7 @@ class Tests {
         assertEquals("", mostExpensive(""))
         assertEquals("", mostExpensive("Хлеб 39.9; Молоко laja; Курица 184.0; Конфеты 89.9"))
         assertEquals("Вино", mostExpensive("Вино 255.0"))
+        assertEquals("a", mostExpensive("a 0"))
     }
 
     @Test
@@ -131,19 +132,18 @@ class Tests {
     @Test
     @Tag("Impossible")
     fun computeDeviceCells() {
-        assertEquals(listOf(0), computeDeviceCells(1, "<", 10000))
-//        assertEquals(listOf(0, 0, 0, 0, 0, 1, 1, 1, 1, 1), computeDeviceCells(10, "+>+>+>+>+", 10000))
-//        assertEquals(listOf(-1, -1, -1, -1, -1, 0, 0, 0, 0, 0), computeDeviceCells(10, "<-<-<-<-<-", 10000))
-//        assertEquals(listOf(1, 1, 1, 1, 1, 0, 0, 0, 0, 0), computeDeviceCells(10, "- <<<<< +[>+]", 10000))
-//        assertEquals(
-//            listOf(0, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0),
-//            computeDeviceCells(11, "<<<<< + >>>>>>>>>> --[<-] >+[>+] >++[--< <[<] >+[>+] >++]", 10000)
-//        )
-//
-//        assertEquals(listOf(0, 0, 0, 0, 0, 1, 1, 0, 0, 0), computeDeviceCells(10, "+>+>+>+>+", 4))
-//        assertEquals(listOf(0, 0, -1, -1, -1, 0, 0, 0, 0, 0), computeDeviceCells(10, "<-<-<-<-<-", 6))
-//        assertEquals(listOf(1, 1, 1, 0, 0, -1, 0, 0, 0, 0), computeDeviceCells(10, "- <<<<< +[>+]", 17))
-        //Is.egorova@mail.ru
+
+        assertEquals(listOf(0, 0, 0, 0, 0, 1, 1, 1, 1, 1), computeDeviceCells(10, "+>+>+>+>+", 10000))
+        assertEquals(listOf(-1, -1, -1, -1, -1, 0, 0, 0, 0, 0), computeDeviceCells(10, "<-<-<-<-<-", 10000))
+        assertEquals(listOf(1, 1, 1, 1, 1, 0, 0, 0, 0, 0), computeDeviceCells(10, "- <<<<< +[>+]", 10000))
+        assertEquals(
+            listOf(0, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0),
+            computeDeviceCells(11, "<<<<< + >>>>>>>>>> --[<-] >+[>+] >++[--< <[<] >+[>+] >++]", 10000)
+        )
+
+        assertEquals(listOf(0, 0, 0, 0, 0, 1, 1, 0, 0, 0), computeDeviceCells(10, "+>+>+>+>+", 4))
+        assertEquals(listOf(0, 0, -1, -1, -1, 0, 0, 0, 0, 0), computeDeviceCells(10, "<-<-<-<-<-", 6))
+        assertEquals(listOf(1, 1, 1, 0, 0, -1, 0, 0, 0, 0), computeDeviceCells(10, "- <<<<< +[>+]", 17))
         assertEquals(
             listOf(0, 6, 5, 4, 3, 2, 1, 0, -1, -1, -2),
             computeDeviceCells(11, "<<<<< + >>>>>>>>>> --[<-] >+[>+] >++[--< <[<] >+[>+] >++]", 256)
@@ -153,3 +153,92 @@ class Tests {
         assertThrows(IllegalStateException::class.java) { computeDeviceCells(20, ">>>>>>>>>>>>>", 12) }
     }
 }
+     /*   assertEquals(listOf(331), computeDeviceCells(1, "-[++]", 500))
+        assertEquals(listOf(269, -3), computeDeviceCells(2, "[[[[[[[[[++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--[]+ < -<]+----+-<  >-<-<-+< ->]+ < <[-++-+-]+<--[+-+> <+--]-+]<--- ---<<[+>+- <<+>--]>]  <+[<+<-+->>-<<+<--+[ -[+>-[>-- ]+--[+<-<-> +--[->-<+<+- +++-]--[-+- - -+]<+-<+-<+-+++-[]<<+<<<<--+<<-+[++><]<><<-+<--+][<]<-]-+><-<<--+--]+-]]-<>-+ >->-<++<>+-+-]+[+--<++]><>--+ +]--+<---<]<<<<+-< -+-+<-->-<<+<>> -+-+-<++ ]---[<+>-+][[+-<-----<<+[[++]<-[]<-+[+++<-->+<-+-[-->[<+><+<<<[- ><+-+ +<++ ->-[+-+ -->+-+[[ ------<--+<<+]-<++--<+>>[> ]<>-><-<]>-<<<-<<+<+--  +]<- --+--<]<-<++<-<++---+-- <--<[+-+<-++ ---< <+++-++<<-<-+++++<--]--+--[-[<--< --+-+<>--[<+->>--+-<+<-<> <-[--++-<+[-<++<-+-<-<+->>--[+--><--<-[-<[><<-+--- -+--+--+  <<<+-<--+-+<<--+<---]<+--+[<- +]]]]]]]]]]]]]]", 1620))
+        assertEquals(
+            listOf(
+                0,
+                0,
+                0,
+                0,
+                7,
+                21,
+                21,
+                21,
+                21,
+                21,
+                21,
+                21,
+                21,
+                21,
+                21,
+                21,
+                21,
+                21,
+                21,
+                21,
+                21,
+                21,
+                21,
+                21,
+                10,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ), computeDeviceCells(49, "--[+++++++++[+++<]+++++++++]", 500)
+        )
+        assertEquals(listOf(234, 32), computeDeviceCells(2, "++++++++[+++++++++++++++++++++[+++<]+++++-++[+]]", 500))
+        assertEquals(listOf(375), computeDeviceCells(1, "[++++]++++[+++]", 500))
+        assertEquals(listOf(1, 1, 1, 1, 1, 0, 0, 0, 0, 0), computeDeviceCells(10, "- <<<<< +[>+]", 10000))
+        assertThrows(IllegalStateException::class.java) {
+            computeDeviceCells(
+                1,
+                "[[[[[[++++++++++++++++++++++++++++++++++++[+++++[+++++++++++[++[+++++++++++[+++++++++++++++++++++++++++][]----<+--+-<<-+]+]<+---++<<<-++-< +<+-+->-->+<-----<-+-<----+<[<-> ++++---<-<>--<-+<+- +--[+ <--[-<>+-<--+++++<><-->-[+->++-<>>-]]]  <+<+- <<+[-+-- <--[-<-->-<--<]---]-+ +->]+-++++< -+>-  -><-<><<]--->-[><+++<-<-  -+ []-+<[-<+--]--- --<]+-]]+-<-<<- -<++-<--<-] +[<-+++[--[[-[-<<>]<> ++[+--+]<- <<]- +<--+-<<<-<< ---<+- -----+[ +-<>[<- -+-<+>++]+ +<-+><-+-> -+-<] --<<---]-- +->+-[ -><-< -<<-+-+ <- --+++- -+++- +<--++[+><+<-<>>-+><<-<++-<---<--+<<-<>+++]---  -><--+ <<>  <]<]>--++-[<]< <><<-<]> <][+-]++-<]-]-- ---+-----]+<->-[+-[-+-[-<--+<-[+ --[[<--+-->-<-[+<<-< <<<+ -[>+[-++<--+--+[---<+--<-+[>+<]<-<<-++-+-<<+-<->-<-----]<+-- <-+<--<<+ +-++ <-+<<<<-< < -<+ +[++<<-+<-<<<-+--+------+--->-  -->-- +<+<<<-]+]-][<<-]+--<<+><-<-<]<<+<- ---]<--<+-[+ --+<]]]]]]",
+                501
+            )
+        }
+        assertEquals(listOf(251), computeDeviceCells(1, "+[+++[+]]", 500))
+        assertEquals(listOf(250), computeDeviceCells(1, "+[ ++]", 500))
+        assertEquals(listOf(1), computeDeviceCells(1, "+[]++", 500))
+        assertEquals(listOf(1), computeDeviceCells(1, "+[]", 10000))
+        assertEquals(listOf(0, 0, 0, 0, 0, 1, 1, 1, 1, 1), computeDeviceCells(10, "+>+>+>+>+", 10000))
+        assertEquals(listOf(-1, -1, -1, -1, -1, 0, 0, 0, 0, 0), computeDeviceCells(10, "<-<-<-<-<-", 10000))
+        assertEquals(
+            listOf(0, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0),
+            computeDeviceCells(11, "<<<<< + >>>>>>>>>> --[<-] >+[>+] >++[--< <[<] >+[>+] >++]", 10000)
+        )
+
+        assertEquals(listOf(0, 0, 0, 0, 0, 1, 1, 0, 0, 0), computeDeviceCells(10, "+>+>+>+>+", 4))
+        assertEquals(listOf(0, 0, -1, -1, -1, 0, 0, 0, 0, 0), computeDeviceCells(10, "<-<-<-<-<-", 6))
+        assertEquals(listOf(1, 1, 1, 0, 0, -1, 0, 0, 0, 0), computeDeviceCells(10, "- <<<<< +[>+]", 17))
+//        Is.egorova@mail.ru
+        assertEquals(
+            listOf(0, 6, 5, 4, 3, 2, 1, 0, -1, -1, -2),
+            computeDeviceCells(11, "<<<<< + >>>>>>>>>> --[<-] >+[>+] >++[--< <[<] >+[>+] >++]", 256)
+        )
+        assertThrows(IllegalArgumentException::class.java) { computeDeviceCells(10, "===", 3) }
+        assertThrows(IllegalArgumentException::class.java) { computeDeviceCells(10, "+>+>[+>", 3) }
+        assertThrows(IllegalStateException::class.java) { computeDeviceCells(20, ">>>>>>>>>>>>>", 12) }
+    }*/
+
