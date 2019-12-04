@@ -300,67 +300,79 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    //Не могу понять почему периодически в этталонном решении остаются \n \r & \t а в моём нет...
-//    TODO()
-    val read = File(inputName).bufferedReader().readText().split("\\n\\n")
-    val write = FileWriter(outputName)
+    var read = File(inputName).bufferedReader().readText()
+    var write = FileWriter(outputName)
+
+    val regular0 = Regex("\\*")
+    val regular1 = Regex("\\*\\*")
+    val regular2 = Regex("\\~\\~")
+    val regular3 = Regex("\\n\\n")
+    val pattern0 = Regex("\\*").toPattern()
+    val pattern1 = Regex("\\*\\*").toPattern()
+    val pattern2 = Regex("\\~\\~").toPattern()
+    val pattern3 = Regex("\\n\\n").toPattern()
 
     var countI = 0
     var countB = 0
     var countS = 0
 
     write.write("<html><body><p>")
-    for (i in read) {
-        var j = i
-        var searchPattern: Matcher = Regex("\\*\\*\\*").toPattern().matcher(j)
-
-        while (searchPattern.find()) {
-            if (countB == 0 && countI == 0) {
-                j = j.replaceFirst("\\*\\*\\*".toRegex(), "<b><i>")
-                countB++
-                countI++
-            } else {
-                j = j.replaceFirst("\\*\\*\\*".toRegex(), "</b></i>")
-                countB--
-                countI--
-            }
-        }
-        searchPattern = Regex("\\*\\*").toPattern().matcher(j)
-
-        while (searchPattern.find()) {
-            if (countB == 0) {
-                j = j.replaceFirst("\\*\\*".toRegex(), "<b>")
-                countB++
-            } else {
-                j = j.replaceFirst("\\*\\*".toRegex(), "</b>")
-                countB--
-            }
-        }
-
-        searchPattern = Regex("\\*").toPattern().matcher(j)
-        while (searchPattern.find()) {
-            if (countI == 0) {
-                j = j.replaceFirst("\\*".toRegex(), "<i>")
-                countI++
-            } else {
-                j = j.replaceFirst("\\*".toRegex(), "</i>")
-                countI--
-            }
-        }
-
-        searchPattern = Regex("~~").toPattern().matcher(j)
-        while (searchPattern.find()) {
-            if (countS == 0) {
-                j = j.replaceFirst("~~".toRegex(), "<s>")
-                countS++
-            } else {
-                j = j.replaceFirst("~~".toRegex(), "</s>")
-                countS--
-            }
-        }
-        write.write(j)
-        write.write("<p></p>")
+    read = read.replace("\r", "")
+    var matcher: Matcher = pattern3.matcher(read)
+    while (matcher.find()) {
+        read = read.replaceFirst(
+            regular3, "</p><p>"
+        )
     }
+    matcher = pattern2.matcher(read)
+    while (matcher.find()) {
+        read = if (countS == 1) {
+            countS--
+            read.replaceFirst(
+                regular2, "</s>"
+            )
+        } else {
+            countS++
+            read.replaceFirst(
+                regular2, "<s>"
+            )
+        }
+    }
+
+    matcher = pattern1.matcher(read)
+    while (matcher.find()) {
+        read = if (countB == 1) {
+            countB--
+            read.replaceFirst(
+                regular1, "</b>"
+            )
+        } else {
+            countB++
+            read.replaceFirst(
+                regular1, "<b>"
+            )
+        }
+    }
+
+
+    matcher = pattern0.matcher(read)
+    while (matcher.find()) {
+        read = if (countI == 1) {
+            countI--
+            read.replaceFirst(
+                regular0, "</i>"
+            )
+        } else {
+            countI++
+            read.replaceFirst(
+                regular0, "<i>"
+            )
+        }
+    }
+
+    read = read.replace("</p><p></p><p>", "</p><p>")
+
+    write.write(read)
     write.write("</p></body></html>")
     write.flush()
     write.close()
@@ -728,4 +740,3 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     out.flush()
     out.close()
 }
-
