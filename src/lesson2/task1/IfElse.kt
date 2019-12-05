@@ -133,14 +133,15 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int = when {
-    abs(kingX - bishopX) == abs(kingY - bishopY) && kingX == rookX ||
-            abs(kingX - bishopX) == abs(kingY - bishopY) && kingY == rookY
-    -> 3
-    kingX == rookX || kingY == rookY -> 1
-    abs(kingX - bishopX) == abs(kingY - bishopY) -> 2
-    else -> 0
-
+): Int {
+    val rook = (rookX == kingX || rookY == kingY)
+    val bishop = abs(kingX - bishopX) == abs(kingY - bishopY)
+    return when {
+        bishop && rook -> 3
+        rook -> 1
+        bishop -> 2
+        else -> 0
+    }
 }
 
 /**
@@ -152,8 +153,8 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    val max: Double = maxOf(a, b, c)
-    val min: Double = minOf(a, b, c)
+    val max = maxOf(a, b, c)
+    val min = minOf(a, b, c)
     val mid = a + b + c - max - min
 
     return when {
