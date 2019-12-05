@@ -716,6 +716,9 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         for (l in 0..list.last().length - (helpStr.length + 1)) {
             spaceCount += " "
         }
+        if (helpStr == "00"){
+            helpStr = "0"
+        }
         list.add(spaceCount + helpStr)
         spaceCount = ""
 
