@@ -669,6 +669,10 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         for (i in lhv.toString()) {
             if (helpStr == "" || helpStr.trim().toInt() / rhv == 0) {
                 helpStr += i
+                if (helpStr.length == 3 && helpStr[0] == '0' && helpStr[1] == '0'){
+                    //Тут как то без приведения к инту не обошлось ошибочка вылетает
+                    helpStr = helpStr[1].toString() + helpStr[2].toString()
+                }
                 if (firstC > 0) {
                     for (l in 0..list.last().length - helpStr.length) {
                         spaceCount += " "
@@ -740,3 +744,4 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     out.flush()
     out.close()
 }
+
