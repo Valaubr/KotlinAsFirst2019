@@ -658,6 +658,7 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
+    //ТУДУ :D - вынести пдсчет пробелов и проверку чисел в отдельные функции
     val out = FileWriter(outputName)
     var list = mutableListOf<String>()
     var firstC = 0
@@ -669,9 +670,11 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         for (i in lhv.toString()) {
             if (helpStr == "" || helpStr.trim().toInt() / rhv == 0) {
                 helpStr += i
-                if (helpStr.length == 3 && helpStr[0] == '0' && helpStr[1] == '0'){
+                if (helpStr.length == 3 && helpStr[0] == '0' && helpStr[1] == '0'
+                    || helpStr.length == 3 && helpStr[0] == '0' && helpStr[1] != '0') {
                     helpStr = helpStr[1].toString() + helpStr[2].toString()
                 }
+
                 if (firstC > 0) {
                     for (l in 0..list.last().length - helpStr.length) {
                         spaceCount += " "
@@ -739,4 +742,3 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     out.flush()
     out.close()
 }
-
