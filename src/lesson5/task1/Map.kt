@@ -348,13 +348,12 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    //в основе bubleSort O(n^2)
-    for ((z, i) in list.withIndex()) {
-        for ((l, j) in list.withIndex()) {
-            if (i + j == number && z != l) {
-                return Pair(z, l)
-            }
+    val checker = mutableMapOf<Int, Int>()
+    for (i in list.indices) {
+        if (checker[list[i]] != null) {
+            return Pair(checker[list[i]]!!, i)
         }
+        checker[number - list[i]] = i
     }
     return Pair(-1, -1)
 }
