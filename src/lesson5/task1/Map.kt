@@ -90,11 +90,7 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     val a = mutableMapOf<Int, MutableList<String>>()
     for ((key, value) in grades) {
-        if (a[value] == null) {
-            a[value] = mutableListOf(key)
-        } else {
-            a[value]!!.add(key)
-        }
+        a.getOrPut(value) { mutableListOf() }.add(key)
     }
     return a
 }
@@ -145,8 +141,11 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
  */
 fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
     val x = mutableListOf<String>()
-    for (nameA in a)
-        if ((nameA in b) && (nameA !in x)) x.add(nameA)
+    for (nameA in a) {
+        if ((nameA in b) && (nameA !in x)) {
+            x.add(nameA)
+        }
+    }
     return x
 }
 
@@ -245,17 +244,17 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    var count = 0
+    var count = false
     for (char in word.toLowerCase()) {
         for (letter in chars) {
             if (char == letter.toLowerCase()) {
-                count = 1
+                count = true
             }
         }
-        if (count == 0) {
+        if (!count) {
             return false
         }
-        count = 0
+        count = false
     }
     return true
 }
@@ -274,10 +273,11 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
  */
 fun extractRepeats(list: List<String>): Map<String, Int> {
     val a = mutableMapOf<String, Int>()
-    for (i in list)
+    for (i in list) {
         if (list.count { it == i } > 1) {
-            a[i] = (list.count { it == i })
+            a[i] = list.count { it == i }
         }
+    }
     return a
 }
 
@@ -292,11 +292,10 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  */
 fun hasAnagrams(words: List<String>): Boolean {
     //я вот задумался, нужн ли мне уникаллизировать слова, но с другой стороны, (Тор, Тор) должны дать TRUE хотя не анаграммы
-    //Или анаграммы... Я вот не задумывался но являются ли эквивалентные слова анаграммами?
     val set = sortedSetOf<String>()
     for (i in words) {
         //унникаллизируем буковки и будет нам счастье :D
-        if (!set.add(i.toSortedSet().toString())){
+        if (!set.add(i.toSortedSet().toString())) {
             return true
         }
     }
