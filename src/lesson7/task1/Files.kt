@@ -670,8 +670,8 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         for (i in lhv.toString()) {
             if (helpStr == "" || helpStr.trim().toInt() / rhv == 0) {
                 helpStr += i
-                if (helpStr.length == 3 && helpStr[0] == '0' && helpStr[1] == '0'
-                    || helpStr.length == 3 && helpStr[0] == '0' && helpStr[1] != '0') {
+                if (helpStr.length >= 3 && helpStr[0] == '0' && helpStr[1] == '0'
+                    || helpStr.length >= 3 && helpStr[0] == '0' && helpStr[1] != '0') {
                     helpStr = helpStr[1].toString() + helpStr[2].toString()
                 }
 
