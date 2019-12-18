@@ -164,11 +164,11 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * Все цены должны быть больше либо равны нуля.
  */
 fun mostExpensive(description: String): String {
-    var workedDesc = description.split(";")
+    val workedDesc = description.split(";")
     var maximum = 0.0
     var returned = ""
     for (i in workedDesc) {
-        var check = i.trim().split(" ")
+        val check = i.trim().split(" ")
         when {
             check.size > 2 || check.size < 2 -> return ""
             check[1].toDoubleOrNull() == null -> return ""
@@ -305,7 +305,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             return arr.toList()
         }
         if (active >= cells || active < 0) {
-            throw IllegalStateException()
+            throw IllegalStateException("IndexOutOfBound")
         }
     }
     return arr.toList()
@@ -367,17 +367,11 @@ fun helpFun(
                 drop--
             }
         }
-        if (active >= arr.size || active < 0) {
-            return throw IllegalStateException()
-        }
+        if (active >= arr.size || active < 0) throw IllegalStateException("IndexOutOfBound")
         i1++
-        if (limitCount == limit) {
-            return arr
-        }
+        if (limitCount == limit) return arr
     }
-    if (limitCount > limit) {
-        return arr
-    }
+    if (limitCount > limit) return arr
     if (abs(arr[active]) > 0) {
         helpFun(i, commands, limit, arr)
     }
