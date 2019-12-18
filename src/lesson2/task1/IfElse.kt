@@ -157,11 +157,12 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     val min = minOf(a, b, c)
     val mid = a + b + c - max - min
 
+    val type = (sqr(mid) + sqr(min) - sqr(max)) / (2 * mid * min)
     return when {
         min + mid < max -> -1
-        sqr(max) < sqr(min) + sqr(mid) -> 0
-        sqr(max) == sqr(min) + sqr(mid) -> 1
-        else -> 2
+        type > 0.0 -> 0
+        type < 0.0 -> 2
+        else -> 1
     }
 }
 
